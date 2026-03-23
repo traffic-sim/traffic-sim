@@ -1,0 +1,39 @@
+name: Bridge
+description: Integration / contract / data flow task
+title: "[Bridge]: "
+labels: ["bridge"]
+
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Goal
+      description: What is this integration or bridge and why is it needed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: What needs to be done?
+      description: Describe what needs to be implemented or connected.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Add checklist items using `- [ ]`
+      value: |
+        - [ ] Integration works end-to-end between systems
+        - [ ] Data is correctly passed and validated
+        - [ ] No breaking changes to existing contracts
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Commands, data flow, serialization details, edge cases, performance considerations, or any important context.

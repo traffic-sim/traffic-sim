@@ -1,0 +1,39 @@
+name: Backend
+description: Backend task
+title: "[Backend]: "
+labels: ["backend"]
+
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Goal
+      description: What is this task about and why is it needed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation
+      description: What needs to be done?
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Add checklist items using `- [ ]`
+      value: |
+        - [ ] Feature works as expected
+        - [ ] Code is reviewed and approved
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Performance, design, edge cases, or important considerations.
