@@ -1,0 +1,35 @@
+name: Frontend
+description: Frontend development task
+title: "[Frontend]: "
+labels: ["frontend"]
+
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Goal
+      description: What is this UI change or feature and why is it needed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: What needs to be done?
+      description: Describe the UI changes, components, or behavior that need to be implemented.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      options:
+        - label: UI matches design/spec and works as expected
+        - label: No console errors or broken UI states
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: UX considerations, state handling, accessibility, performance, edge cases, or design constraints.
