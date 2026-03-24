@@ -151,6 +151,8 @@ ts-<number>-short-description
 
 # Linking to Github Issues
 
+---
+
 Always include the issue ID:
 
 * Branch name → `ts-6-...`
