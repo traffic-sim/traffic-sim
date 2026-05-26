@@ -2,6 +2,8 @@
 
 This project uses Github Issues for issue tracking and GitHub for version control and collaboration.
 
+Please make sure to review the [Architecture Documentation](ARCHITECTURE.md) to understand the system's design before starting work on complex features.
+
 ---
 
 # Quick Start
