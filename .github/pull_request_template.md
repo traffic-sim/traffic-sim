@@ -1,15 +1,3 @@
-## Summary
-
-What does this PR do?
-
----
-
-## Related Linear Issue
-
-TS-XX
-
----
-
 ## Changes
 
 -
@@ -31,7 +19,7 @@ TS-XX
 
 ## Checklist
 
-- [ ] Code builds successfully  
-- [ ] Tested locally  
-- [ ] Linked to Linear issue  
-- [ ] No unintended changes  
+- [ ] Code builds successfully
+- [ ] Tested locally
+- [ ] Linked to Github issue
+- [ ] No unintended changes
