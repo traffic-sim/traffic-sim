@@ -23,4 +23,3 @@ fn sanitise_name(raw: &str) -> String {
 
     trimmed.chars().take(MAX_NAME_LENGTH).collect()
 }
-

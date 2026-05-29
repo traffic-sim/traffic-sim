@@ -2,11 +2,11 @@ use std::path::PathBuf;
 
 fn main() {
     let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-    let repo_root    = manifest_dir.parent().unwrap();
-    let backend_out  = repo_root.join("build").join("backend");
-    let lib_dir      = backend_out.join("lib");
-    let header       = backend_out.join("include").join("backend.h");
-    let out_dir      = PathBuf::from(std::env::var("OUT_DIR").unwrap());
+    let repo_root = manifest_dir.parent().unwrap();
+    let backend_out = repo_root.join("build").join("backend");
+    let lib_dir = backend_out.join("lib");
+    let header = backend_out.join("include").join("backend.h");
+    let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
 
     // -----------------------------------------------------------------------
     // 1. Link the pre-built static library
@@ -45,7 +45,7 @@ fn main() {
             "bindgen failed — is libclang installed?\n  \
              Linux:   apt install libclang-dev\n  \
              macOS:   brew install llvm\n  \
-             Windows: install LLVM from https://releases.llvm.org/download.html"
+             Windows: install LLVM from https://releases.llvm.org/download.html",
         );
 
     bindings

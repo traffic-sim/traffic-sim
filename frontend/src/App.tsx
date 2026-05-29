@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import "./App.css"
+import "./App.css";
 
 type Language = "en" | "de" | "fr";
 
@@ -53,10 +53,7 @@ function App() {
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a name..."
         />
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.currentTarget.value as Language)}
-        >
+        <select value={language} onChange={(e) => setLanguage(e.currentTarget.value as Language)}>
           <option value="en">English</option>
           <option value="de">Deutsch</option>
           <option value="fr">Français</option>

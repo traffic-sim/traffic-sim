@@ -1,0 +1,28 @@
+repos:
+  - repo: local
+    hooks:
+      # ── C++ ──────────────────────────────────────────────────
+      # fmt-cpp runs clang-format -i on all staged C++ files.
+      - id: fmt-cpp
+        name: just fmt-cpp
+        entry: just fmt-cpp
+        language: system
+        types_or: [c, c++]
+        pass_filenames: false
+
+      # ── Rust ─────────────────────────────────────────────────
+      # fmt-rust formats both crates
+      - id: fmt-rust
+        name: just fmt-rust
+        entry: just fmt-rust
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      # ── Frontend ─────────────────────────────────────────────
+      - id: fmt-frontend
+        name: just fmt-frontend
+        entry: just fmt-frontend
+        language: system
+        types_or: [ts, tsx, json, css, markdown]
+        pass_filenames: false

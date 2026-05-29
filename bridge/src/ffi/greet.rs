@@ -1,6 +1,6 @@
-use std::ffi::{CString, CStr};
 use crate::ffi::{self, Language as CLanguage};
 use crate::models::greet::Language;
+use std::ffi::{CStr, CString};
 
 pub fn greet(name: &str, language: Language) -> String {
     let c_name = CString::new(name.as_bytes()).unwrap();
