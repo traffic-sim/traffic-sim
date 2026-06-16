@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { check } from "@tauri-apps/plugin-updater";
+import { ask } from "@tauri-apps/plugin-dialog";
+import { relaunch } from "@tauri-apps/plugin-process";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 
@@ -14,10 +17,29 @@ interface GreetResponse {
   language_used: Language;
 }
 
+async function checkForUpdates() {
+  const update = await check();
+  if (!update) return;
+
+  const yes = await ask(
+    `Version ${update.version} is available.\n\nRelease notes:\n${update.body}\n\nInstall now?`,
+    { title: "Update Available", kind: "info" }
+  );
+
+  if (yes) {
+    await update.downloadAndInstall();
+    await relaunch();
+  }
+}
+
 function App() {
   const [name, setName] = useState("");
   const [language, setLanguage] = useState<Language>("en");
   const [response, setResponse] = useState<GreetResponse | null>(null);
+
+  useEffect(() => {
+    checkForUpdates().catch(console.error);
+  }, []);
 
   async function greet() {
     const req: GreetRequest = { name, language };
