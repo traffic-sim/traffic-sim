@@ -1,0 +1,72 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/lint.yml
+
+  build-linux:
+    name: Build Linux
+    needs: lint
+    uses: ./.github/workflows/build.yml
+    with:
+      signed: true
+    secrets:
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+  upload:
+    name: Upload artifacts
+    needs: [build-linux]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-bundle
+          path: dist/linux
+
+      - name: List artifacts
+        run: find dist/linux -type f
+
+      - name: Generate latest.json
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          TAG="${GITHUB_REF_NAME}"
+          BASE="https://github.com/${{ github.repository }}/releases/download/${TAG}"
+          APPIMAGE_SIG=$(cat dist/linux/*.AppImage.sig 2>/dev/null || echo "")
+          PUB_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          cat > dist/latest.json << ENDJSON
+          {
+            "version": "${VERSION}",
+            "notes": "See the release page for full changelog.",
+            "pub_date": "${PUB_DATE}",
+            "platforms": {
+              "linux-x86_64": {
+                "url": "${BASE}/traffic-sim_${VERSION}_amd64.AppImage",
+                "signature": "${APPIMAGE_SIG}"
+              }
+            }
+          }
+          ENDJSON
+
+      - name: Upload to existing release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${GITHUB_REF_NAME}" \
+            dist/linux/*.deb \
+            dist/linux/*.rpm \
+            dist/linux/*.AppImage \
+            dist/linux/*.AppImage.sig \
+            dist/latest.json \
+            --clobber

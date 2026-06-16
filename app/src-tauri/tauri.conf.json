@@ -28,5 +28,14 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/traffic-sim/traffic-sim/releases/latest/download/latest.json"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ2RTQ5NTlCNTlDMTE3QkYKUldTL0Y4RlptNVhrMXZUaG0rOHNrVDZjbjJia1lXVTJ6TENuREgrd3VEUGw1TEthRC9DSk1xOGIK"
+    }
   }
 }

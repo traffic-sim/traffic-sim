@@ -29,6 +29,12 @@ build:
   just build-tauri
   just collect-artifacts
 
+build-signed:
+  just build-backend
+  just build-frontend
+  just build-tauri-signed
+  just collect-artifacts
+
 build-backend:
   just build-backend-{{os()}}
 
@@ -59,6 +65,9 @@ build-frontend:
 build-tauri:
   just build-tauri-{{os()}}
 
+build-tauri-signed:
+  just build-tauri-signed-{{os()}}
+
 [working-directory: "app/src-tauri"]
 build-tauri-windows:
   cargo tauri build --config '{\"bundle\":{\"targets\":[\"msi\",\"nsis\"]}}'
@@ -67,10 +76,36 @@ build-tauri-windows:
 build-tauri-linux:
   cargo tauri build --config '{"bundle":{"targets":["deb","rpm","appimage"]}}'
 
+[working-directory: 'app/src-tauri']
+build-tauri-signed-linux:
+  cargo tauri build \
+    --config '{"bundle":{"targets":["deb","rpm","appimage"], "createUpdaterArtifacts": true }}'
+
+[working-directory: 'app/src-tauri']
+build-tauri-signed-windows:
+  cargo tauri build \
+    --config '{"bundle":{"targets":["msi","nsis"], "createUpdaterArtifacts": true}}'
+
 collect-artifacts:
+  just collect-artifacts-{{os()}}
+
+collect-artifacts-linux:
   cmake -E rm -rf build/artifacts
   cmake -E make_directory build/artifacts
-  cmake -E copy_directory app/src-tauri/target/release/bundle build/artifacts
+  cp app/src-tauri/target/release/bundle/deb/*.deb         build/artifacts/
+  cp app/src-tauri/target/release/bundle/rpm/*.rpm         build/artifacts/
+  cp app/src-tauri/target/release/bundle/appimage/*.AppImage build/artifacts/
+  cp app/src-tauri/target/release/bundle/appimage/*.AppImage.sig build/artifacts/ 2>/dev/null || true
+  cp app/src-tauri/target/release/bundle/msi/*.msi.sig     build/artifacts/ 2>/dev/null || true
+  cp app/src-tauri/target/release/bundle/nsis/*.exe.sig    build/artifacts/ 2>/dev/null || true
+
+collect-artifacts-windows:
+  cmake -E rm -rf build/artifacts
+  cmake -E make_directory build/artifacts
+  Copy-Item app/src-tauri/target/release/bundle/msi/*.msi       build/artifacts/
+  Copy-Item app/src-tauri/target/release/bundle/msi/*.msi.sig   build/artifacts/ -ErrorAction SilentlyContinue
+  Copy-Item app/src-tauri/target/release/bundle/nsis/*.exe      build/artifacts/
+  Copy-Item app/src-tauri/target/release/bundle/nsis/*.exe.sig  build/artifacts/ -ErrorAction SilentlyContinue
 
 # =========================
 # LINT
