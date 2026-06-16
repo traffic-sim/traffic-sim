@@ -1,0 +1,91 @@
+name: Lint & Check
+
+on:
+  push:
+    branches-ignore: [master]
+  workflow_call:
+
+jobs:
+  # ── C++ ──────────────────────────────────────────────────────
+  cpp:
+    name: C++ (clang-format + clang-tidy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: taiki-e/install-action@just
+
+      - name: Install clang toolchain
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y \
+            clang-18 clang-tidy-18 clang-format-18 cmake ninja-build
+          sudo update-alternatives --install /usr/bin/clang-tidy \
+            clang-tidy /usr/bin/clang-tidy-18 100
+          sudo update-alternatives --install /usr/bin/clang-format \
+            clang-format /usr/bin/clang-format-18 100
+
+      - name: CMake configure (compile_commands.json)
+        run: just cmake-configure
+
+      - name: just check-cpp
+        run: just check-cpp
+
+  # ── Rust ─────────────────────────────────────────────────────
+  rust:
+    name: Rust (rustfmt + clippy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            bridge
+            app/src-tauri
+
+      - uses: taiki-e/install-action@just
+
+      # bindgen only needs the headers, not the compiled lib.
+      # just copy-headers stages them into build/backend/include.
+      - name: Install clang and tauri dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt install libwebkit2gtk-4.1-dev \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libclang-dev \
+            cmake
+
+      - name: Copy backend headers
+        run: just copy-headers
+
+      - name: just check-rust
+        run: just check-rust
+
+  # ── Frontend ─────────────────────────────────────────────────
+  frontend:
+    name: Frontend (ESLint + Prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: taiki-e/install-action@just
+
+      - run: npm --prefix frontend ci
+
+      - name: just check-frontend
+        run: just check-frontend
+
