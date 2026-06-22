@@ -23,3 +23,20 @@ endif()
 install(TARGETS backend ARCHIVE DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include)
 
+
+include(FetchContent)
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.15.1
+)
+FetchContent_MakeAvailable(Catch2)
+
+enable_testing()
+add_executable(backend_tests tests/backend_test.cpp)
+target_link_libraries(backend_tests PRIVATE backend Catch2::Catch2WithMain)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(backend_tests)
+

@@ -11,3 +11,5 @@ bindgen = "0.72.1"
 
 [dependencies]
 serde = {version = "1", features = ["derive"]}
+
+[dev-dependencies]

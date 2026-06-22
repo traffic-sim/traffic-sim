@@ -31,6 +31,9 @@ jobs:
       - name: just check-cpp
         run: just check-cpp
 
+      - name: just test-cpp
+        run: just test-cpp
+
   # ── Rust ─────────────────────────────────────────────────────
   rust:
     name: Rust (rustfmt + clippy)
@@ -69,6 +72,9 @@ jobs:
       - name: just check-rust
         run: just check-rust
 
+      - name: just test-rust
+        run: just test-rust
+
   # ── Frontend ─────────────────────────────────────────────────
   frontend:
     name: Frontend (ESLint + Prettier)
@@ -89,3 +95,5 @@ jobs:
       - name: just check-frontend
         run: just check-frontend
 
+      - name: just test-frontend
+        run: just test-frontend
