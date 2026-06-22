@@ -108,6 +108,26 @@ collect-artifacts-windows:
   Copy-Item app/src-tauri/target/release/bundle/nsis/*.exe.sig  build/artifacts/ -ErrorAction SilentlyContinue
 
 # =========================
+# TEST
+# =========================
+
+test:
+  just test-cpp
+  just test-rust
+  just test-frontend
+
+[working-directory: "backend"]
+test-cpp:
+  ctest --test-dir _cmake_build --output-on-failure
+
+test-rust: copy-headers
+  cargo test --manifest-path bridge/Cargo.toml
+
+[working-directory: "frontend"]
+test-frontend:
+  npm run test -- --run
+
+# =========================
 # LINT
 # =========================
 
