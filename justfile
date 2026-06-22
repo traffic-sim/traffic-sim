@@ -118,9 +118,10 @@ test:
 
 [working-directory: "backend"]
 test-cpp:
+  cmake --build _cmake_build
   ctest --test-dir _cmake_build --output-on-failure
 
-test-rust: copy-headers
+test-rust: build-backend copy-headers
   cargo test --manifest-path bridge/Cargo.toml
 
 [working-directory: "frontend"]
