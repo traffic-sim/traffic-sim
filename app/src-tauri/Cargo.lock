@@ -317,7 +317,7 @@ dependencies = [
 
 [[package]]
 name = "bridge"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bindgen",
  "serde",
@@ -4703,7 +4703,7 @@ dependencies = [
 
 [[package]]
 name = "traffic-sim"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bridge",
  "serde",

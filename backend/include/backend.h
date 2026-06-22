@@ -8,7 +8,7 @@ extern "C" {
 typedef enum {
     LANG_EN = 0,
     LANG_DE = 1,
-    LANG_FR = 3,
+    LANG_FR = 2,
 } Language;
 
 char* backend_greet(const char* name, Language lang);
