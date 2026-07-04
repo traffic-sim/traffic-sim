@@ -1,0 +1,53 @@
+.menubar {
+  display: flex;
+  align-items: center;
+  height: 2.25rem;
+  background: var(--bg-panel);
+  border-bottom: 0.0625rem solid var(--border);
+  padding: 0 0.625rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+.menubar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+  padding-right: 0.75rem;
+}
+.brand-name {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: -0.015em;
+}
+.menubar-sep {
+  width: 0.0625rem;
+  height: 1rem;
+  background: var(--border);
+  margin: 0 0.625rem;
+}
+.menubar-tabs {
+  display: flex;
+  gap: 0.0625rem;
+}
+.tab {
+  padding: 0.1875rem 0.625rem;
+  font-size: 0.75rem;
+  font-family: var(--font);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-3);
+  cursor: pointer;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+.tab:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+.tab-active {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 500;
+}
