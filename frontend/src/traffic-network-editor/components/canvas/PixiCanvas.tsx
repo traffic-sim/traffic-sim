@@ -1,8 +1,9 @@
 import { Application, extend } from "@pixi/react";
 import { Container, Graphics, Rectangle } from "pixi.js";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { useNetworkStore } from "../../../entities/network";
+import { DEFAULT_CAMERA } from "../../model/camera";
 import { COLORS } from "../../pixi/constants";
 import { drawGrid } from "../../pixi/renderGrid";
 import { drawNetwork } from "../../pixi/renderNetwork";
@@ -18,21 +19,22 @@ extend({ Container, Graphics });
 export function PixiCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useContainerSize(containerRef);
+  const [camera] = useState(DEFAULT_CAMERA);
 
   const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
 
-  const handlePointerTap = useCanvasTap();
+  const handlePointerTap = useCanvasTap(camera);
 
   const handleDrawGrid = useCallback(
-    (graphics: Graphics) => drawGrid(graphics, size.width, size.height),
-    [size.width, size.height]
+    (graphics: Graphics) => drawGrid(graphics, size.width, size.height, camera),
+    [size.width, size.height, camera]
   );
 
   const handleDrawNetwork = useCallback(
-    (graphics: Graphics) => drawNetwork({ graphics, nodes, edges, selectedNodeId }),
-    [nodes, edges, selectedNodeId]
+    (graphics: Graphics) => drawNetwork({ graphics, nodes, edges, selectedNodeId, camera }),
+    [nodes, edges, selectedNodeId, camera]
   );
 
   const hitArea = useMemo(
