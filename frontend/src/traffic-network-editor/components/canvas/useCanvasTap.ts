@@ -1,10 +1,9 @@
+import type { FederatedPointerEvent } from "pixi.js";
 import { useCallback } from "react";
 
 import { useNetworkStore } from "../../../entities/network";
 import { handleCanvasTap } from "../../pixi/handleCanvasTap";
 import { useEditorUiStore } from "../../store/editorUiStore";
-
-import type { FederatedPointerEvent } from "pixi.js";
 
 export function useCanvasTap() {
   return useCallback((event: FederatedPointerEvent) => {

@@ -1,6 +1,8 @@
 import { useState } from "react";
+
 import { MenuBar, type MenuBarTab } from "./components/MenuBar";
 import { TrafficNetworkEditorPage } from "./traffic-network-editor";
+
 import "./App.css";
 
 enum View {

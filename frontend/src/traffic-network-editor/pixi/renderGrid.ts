@@ -1,5 +1,6 @@
-import { COLORS, GRID_MAJOR_EVERY, GRID_SIZE } from "./constants.ts";
 import type { Graphics } from "pixi.js";
+
+import { COLORS, GRID_MAJOR_EVERY, GRID_SIZE } from "./constants";
 
 export function drawGrid(g: Graphics, width: number, height: number) {
   g.clear();
