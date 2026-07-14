@@ -1,30 +1,41 @@
 import type { Graphics } from "pixi.js";
 
+import type { Camera } from "../model/camera";
+
 import { COLORS, GRID_MAJOR_EVERY, GRID_SIZE } from "./constants";
 
-export function drawGrid(g: Graphics, width: number, height: number) {
+export function drawGrid(g: Graphics, width: number, height: number, camera: Camera) {
   g.clear();
 
   g.rect(0, 0, width, height).fill({ color: COLORS.background, alpha: 0 });
 
-  for (let x = 0; x <= width; x += GRID_SIZE) {
-    g.moveTo(x + 0.5, 0).lineTo(x + 0.5, height);
+  const step = GRID_SIZE * camera.zoom;
+  const majorStep = step * GRID_MAJOR_EVERY;
+
+  const originX = -camera.x * camera.zoom;
+  const originY = -camera.y * camera.zoom;
+
+  const firstX = originX % step;
+  const firstMajorX = originX % majorStep;
+  const firstY = originY % step;
+  const firstMajorY = originY % majorStep;
+
+  for (let x = firstX; x <= width; x += step) {
+    g.moveTo(Math.round(x) + 0.5, 0).lineTo(Math.round(x) + 0.5, height);
   }
 
-  for (let y = 0; y <= height; y += GRID_SIZE) {
-    g.moveTo(0, y + 0.5).lineTo(width, y + 0.5);
+  for (let y = firstY; y <= height; y += step) {
+    g.moveTo(0, Math.round(y) + 0.5).lineTo(width, Math.round(y) + 0.5);
   }
 
   g.stroke({ width: 1, color: COLORS.gridFine });
 
-  const major = GRID_SIZE * GRID_MAJOR_EVERY;
-
-  for (let x = 0; x <= width; x += major) {
-    g.moveTo(x + 0.5, 0).lineTo(x + 0.5, height);
+  for (let x = firstMajorX; x <= width; x += majorStep) {
+    g.moveTo(Math.round(x) + 0.5, 0).lineTo(Math.round(x) + 0.5, height);
   }
 
-  for (let y = 0; y <= height; y += major) {
-    g.moveTo(0, y + 0.5).lineTo(width, y + 0.5);
+  for (let y = firstMajorY; y <= height; y += majorStep) {
+    g.moveTo(0, Math.round(y) + 0.5).lineTo(width, Math.round(y) + 0.5);
   }
 
   g.stroke({ width: 1, color: COLORS.gridMajor });

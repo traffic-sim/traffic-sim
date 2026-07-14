@@ -1,6 +1,7 @@
 import type { Graphics } from "pixi.js";
 
 import type { RoadEdge, RoadNode } from "../../entities/network";
+import { type Camera, worldToScreen } from "../model/camera";
 
 import { COLORS, NODE_RADIUS, ROAD_WIDTH } from "./constants";
 
@@ -9,9 +10,10 @@ interface DrawNetworkParams {
   nodes: RoadNode[];
   edges: RoadEdge[];
   selectedNodeId: string | null;
+  camera: Camera;
 }
 
-export function drawNetwork({ graphics, nodes, edges, selectedNodeId }: DrawNetworkParams) {
+export function drawNetwork({ graphics, nodes, edges, selectedNodeId, camera }: DrawNetworkParams) {
   graphics.clear();
 
   for (const edge of edges) {
@@ -21,21 +23,25 @@ export function drawNetwork({ graphics, nodes, edges, selectedNodeId }: DrawNetw
       continue;
     }
 
+    const fromScreen = worldToScreen(from.x, from.y, camera);
+    const toScreen = worldToScreen(to.x, to.y, camera);
+
     graphics
-      .moveTo(from.x, from.y)
-      .lineTo(to.x, to.y)
+      .moveTo(fromScreen.x, fromScreen.y)
+      .lineTo(toScreen.x, toScreen.y)
       .stroke({ width: ROAD_WIDTH, color: COLORS.road, cap: "round" });
 
     graphics
-      .moveTo(from.x, from.y)
-      .lineTo(to.x, to.y)
+      .moveTo(fromScreen.x, fromScreen.y)
+      .lineTo(toScreen.x, toScreen.y)
       .stroke({ width: ROAD_WIDTH - 4, color: COLORS.roadFill, cap: "round" });
   }
 
   for (const node of nodes) {
     const isSelected = node.id === selectedNodeId;
+    const point = worldToScreen(node.x, node.y, camera);
     graphics
-      .circle(node.x, node.y, NODE_RADIUS)
+      .circle(point.x, point.y, NODE_RADIUS)
       .fill(isSelected ? COLORS.nodeSelected : COLORS.nodeDefault)
       .stroke({ width: 2, color: COLORS.nodeStroke });
   }
