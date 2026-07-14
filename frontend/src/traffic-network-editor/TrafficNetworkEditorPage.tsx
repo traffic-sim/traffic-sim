@@ -1,5 +1,5 @@
-import { PixiCanvas } from "./components/PixiCanvas.tsx";
 import "./TrafficNetworkEditorPage.css";
+import { PixiCanvas } from "./components/canvas";
 
 const EDITOR_HINT_TEXT =
   "Click to place a point. Click a second point to draw a straight road between them. " +

@@ -1,6 +1,6 @@
-import type { Graphics } from "pixi.js";
-import type { RoadEdge, RoadNode } from "../types.ts";
 import { COLORS, NODE_RADIUS, ROAD_WIDTH } from "./constants.ts";
+import type { RoadEdge, RoadNode } from "../../entities/network";
+import type { Graphics } from "pixi.js";
 
 interface DrawNetworkParams {
   graphics: Graphics;
@@ -15,7 +15,9 @@ export function drawNetwork({ graphics, nodes, edges, selectedNodeId }: DrawNetw
   for (const edge of edges) {
     const from = nodes.find((n) => n.id === edge.from);
     const to = nodes.find((n) => n.id === edge.to);
-    if (!from || !to) continue;
+    if (!from || !to) {
+      continue;
+    }
 
     graphics
       .moveTo(from.x, from.y)
