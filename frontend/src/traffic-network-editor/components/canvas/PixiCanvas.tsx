@@ -1,38 +1,26 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Application, extend } from "@pixi/react";
-import { Container, Graphics, Rectangle, type FederatedPointerEvent } from "pixi.js";
-import { useNetworkStore } from "../store/networkStore.ts";
-import { drawNetwork } from "../pixi/renderNetwork.ts";
-import { drawGrid } from "../pixi/renderGrid.ts";
-import { COLORS, CANVAS_WIDTH, CANVAS_HEIGHT } from "../pixi/constants.ts";
 import "./PixiCanvas.css";
+import { Application, extend } from "@pixi/react";
+import { Container, Graphics, Rectangle } from "pixi.js";
+import { useCallback, useMemo, useRef } from "react";
+import { useNetworkStore } from "../../../entities/network";
+import { COLORS } from "../../pixi/constants.ts";
+import { drawGrid } from "../../pixi/renderGrid.ts";
+import { drawNetwork } from "../../pixi/renderNetwork.ts";
+import { useEditorUiStore } from "../../store/editorUiStore.ts";
+import { useCanvasTap } from "./useCanvasTap.ts";
+import { useContainerSize } from "./useContainerSize.ts";
 
 extend({ Container, Graphics });
 
 export function PixiCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
+  const size = useContainerSize(containerRef);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      if (width > 0 && height > 0) setSize({ width, height });
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
+  const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
-  const selectedNodeId = useNetworkStore((s) => s.selectedNodeId);
-  const handleCanvasTap = useNetworkStore((s) => s.handleCanvasTap);
 
-  const handlePointerTap = useCallback(
-    (event: FederatedPointerEvent) => handleCanvasTap(event.global.x, event.global.y),
-    [handleCanvasTap]
-  );
+  const handlePointerTap = useCanvasTap();
 
   const handleDrawGrid = useCallback(
     (graphics: Graphics) => drawGrid(graphics, size.width, size.height),
