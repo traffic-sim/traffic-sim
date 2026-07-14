@@ -1,1 +1,1 @@
-export { TrafficNetworkEditorPage } from "./TrafficNetworkEditorPage.tsx";
+export { TrafficNetworkEditorPage } from "./TrafficNetworkEditorPage";

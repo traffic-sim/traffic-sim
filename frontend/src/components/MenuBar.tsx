@@ -1,5 +1,6 @@
-import "./MenuBar.css";
 import type { Key } from "react";
+
+import "./MenuBar.css";
 
 export interface MenuBarTab<T extends Key> {
   id: T;

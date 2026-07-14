@@ -1,6 +1,5 @@
-import { findNodeAt } from "../model/hitTest";
-
 import type { RoadNode } from "../../entities/network";
+import { findNodeAt } from "../model/hitTest";
 
 export interface CanvasTapActions {
   addNode: (x: number, y: number) => string;

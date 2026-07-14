@@ -1,14 +1,17 @@
-import "./PixiCanvas.css";
 import { Application, extend } from "@pixi/react";
 import { Container, Graphics, Rectangle } from "pixi.js";
 import { useCallback, useMemo, useRef } from "react";
+
 import { useNetworkStore } from "../../../entities/network";
-import { COLORS } from "../../pixi/constants.ts";
-import { drawGrid } from "../../pixi/renderGrid.ts";
-import { drawNetwork } from "../../pixi/renderNetwork.ts";
-import { useEditorUiStore } from "../../store/editorUiStore.ts";
-import { useCanvasTap } from "./useCanvasTap.ts";
-import { useContainerSize } from "./useContainerSize.ts";
+import { COLORS } from "../../pixi/constants";
+import { drawGrid } from "../../pixi/renderGrid";
+import { drawNetwork } from "../../pixi/renderNetwork";
+import { useEditorUiStore } from "../../store/editorUiStore";
+
+import { useCanvasTap } from "./useCanvasTap";
+import { useContainerSize } from "./useContainerSize";
+
+import "./PixiCanvas.css";
 
 extend({ Container, Graphics });
 

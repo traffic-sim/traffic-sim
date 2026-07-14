@@ -1,6 +1,8 @@
-import { COLORS, NODE_RADIUS, ROAD_WIDTH } from "./constants.ts";
-import type { RoadEdge, RoadNode } from "../../entities/network";
 import type { Graphics } from "pixi.js";
+
+import type { RoadEdge, RoadNode } from "../../entities/network";
+
+import { COLORS, NODE_RADIUS, ROAD_WIDTH } from "./constants";
 
 interface DrawNetworkParams {
   graphics: Graphics;
