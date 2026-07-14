@@ -22,6 +22,7 @@ export function PixiCanvas() {
   const [camera] = useState(DEFAULT_CAMERA);
 
   const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
+  const selectedEdgeId = useEditorUiStore((s) => s.selectedEdgeId);
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
 
@@ -33,8 +34,9 @@ export function PixiCanvas() {
   );
 
   const handleDrawNetwork = useCallback(
-    (graphics: Graphics) => drawNetwork({ graphics, nodes, edges, selectedNodeId, camera }),
-    [nodes, edges, selectedNodeId, camera]
+    (graphics: Graphics) =>
+      drawNetwork({ graphics, nodes, edges, selectedNodeId, selectedEdgeId, camera }),
+    [nodes, edges, selectedNodeId, selectedEdgeId, camera]
   );
 
   const hitArea = useMemo(

@@ -7,6 +7,8 @@ interface NetworkState {
   edges: RoadEdge[];
   addNode: (x: number, y: number) => string;
   addEdge: (from: string, to: string) => void;
+  removeNode: (id: string) => void;
+  removeEdge: (id: string) => void;
   setGraph: (graph: NetworkGraph) => void;
   reset: () => void;
 }
@@ -38,6 +40,19 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
       const id = `e-${crypto.randomUUID()}`;
       set((state) => ({
         edges: [...state.edges, { id, from, to }],
+      }));
+    },
+
+    removeNode: (id) => {
+      set((state) => ({
+        nodes: state.nodes.filter((n) => n.id !== id),
+        edges: state.edges.filter((e) => e.from !== id && e.to !== id),
+      }));
+    },
+
+    removeEdge: (id) => {
+      set((state) => ({
+        edges: state.edges.filter((e) => e.id !== id),
       }));
     },
 

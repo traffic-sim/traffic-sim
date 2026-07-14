@@ -3,28 +3,47 @@ import type { Graphics } from "pixi.js";
 import type { RoadEdge, RoadNode } from "../../entities/network";
 import { type Camera, worldToScreen } from "../model/camera";
 
-import { COLORS, NODE_RADIUS, ROAD_WIDTH } from "./constants";
+import {
+  COLORS,
+  NODE_RADIUS,
+  ROAD_HIGHLIGHT_ALPHA,
+  ROAD_HIGHLIGHT_WIDTH,
+  ROAD_WIDTH,
+} from "./constants";
 
 interface DrawNetworkParams {
   graphics: Graphics;
   nodes: RoadNode[];
   edges: RoadEdge[];
   selectedNodeId: string | null;
+  selectedEdgeId: string | null;
   camera: Camera;
 }
 
-export function drawNetwork({ graphics, nodes, edges, selectedNodeId, camera }: DrawNetworkParams) {
+export function drawNetwork(params: DrawNetworkParams) {
+  const { graphics, nodes, edges, selectedNodeId, selectedEdgeId, camera } = params;
   graphics.clear();
 
   for (const edge of edges) {
     const from = nodes.find((n) => n.id === edge.from);
     const to = nodes.find((n) => n.id === edge.to);
+
     if (!from || !to) {
       continue;
     }
 
     const fromScreen = worldToScreen(from.x, from.y, camera);
     const toScreen = worldToScreen(to.x, to.y, camera);
+    const isSelected = edge.id === selectedEdgeId;
+
+    if (isSelected) {
+      graphics.moveTo(fromScreen.x, fromScreen.y).lineTo(toScreen.x, toScreen.y).stroke({
+        width: ROAD_HIGHLIGHT_WIDTH,
+        color: COLORS.nodeSelected,
+        cap: "round",
+        alpha: ROAD_HIGHLIGHT_ALPHA,
+      });
+    }
 
     graphics
       .moveTo(fromScreen.x, fromScreen.y)
@@ -34,7 +53,11 @@ export function drawNetwork({ graphics, nodes, edges, selectedNodeId, camera }: 
     graphics
       .moveTo(fromScreen.x, fromScreen.y)
       .lineTo(toScreen.x, toScreen.y)
-      .stroke({ width: ROAD_WIDTH - 4, color: COLORS.roadFill, cap: "round" });
+      .stroke({
+        width: ROAD_WIDTH - 4,
+        color: isSelected ? COLORS.roadFillSelected : COLORS.roadFill,
+        cap: "round",
+      });
   }
 
   for (const node of nodes) {

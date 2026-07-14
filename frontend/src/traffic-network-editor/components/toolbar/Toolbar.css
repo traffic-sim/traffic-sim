@@ -1,0 +1,66 @@
+.toolbar {
+  width: 2.75rem;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border-right: 0.0625rem solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.5rem;
+  gap: 0.125rem;
+}
+
+.toolbar-button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0.0625rem solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all 0.1s;
+  padding: 0;
+}
+
+.toolbar-button:hover {
+  background: var(--bg-hover);
+}
+
+.toolbar-button[data-active="true"] {
+  background: var(--blue-light);
+  border-color: #b0c4e8;
+  color: var(--blue);
+}
+
+.toolbar-button[data-active="true"]:hover {
+  background: var(--blue-light);
+}
+
+.toolbar-divider {
+  width: 1.375rem;
+  height: 0.0625rem;
+  background: var(--border);
+  margin: 0.25rem 0;
+}
+
+.toolbar-key {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text-4);
+  background: transparent;
+  border-radius: 0.125rem;
+}
+
+.toolbar-key[data-active="true"] {
+  background: var(--blue-light);
+  color: var(--blue);
+}
