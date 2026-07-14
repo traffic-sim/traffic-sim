@@ -51,6 +51,7 @@ export function PixiCanvas() {
         resolution={window.devicePixelRatio || 1}
         autoDensity
         background={COLORS.background}
+        antialias
       >
         <pixiContainer eventMode="static" hitArea={hitArea} onPointerTap={handlePointerTap}>
           <pixiGraphics draw={handleDrawGrid} />

@@ -5,11 +5,16 @@ import { type Camera, worldToScreen } from "../model/camera";
 
 import {
   COLORS,
+  DASH_ALPHA,
+  DASH_COLOR,
+  DASH_GAP,
+  DASH_LENGTH,
   NODE_RADIUS,
   ROAD_HIGHLIGHT_ALPHA,
   ROAD_HIGHLIGHT_WIDTH,
   ROAD_WIDTH,
 } from "./constants";
+import { drawDashedLine } from "./renderDashedLine";
 
 interface DrawNetworkParams {
   graphics: Graphics;
@@ -58,6 +63,18 @@ export function drawNetwork(params: DrawNetworkParams) {
         color: isSelected ? COLORS.roadFillSelected : COLORS.roadFill,
         cap: "round",
       });
+
+    drawDashedLine(
+      graphics,
+      fromScreen.x,
+      fromScreen.y,
+      toScreen.x,
+      toScreen.y,
+      DASH_LENGTH * camera.zoom,
+      DASH_GAP * camera.zoom,
+      DASH_COLOR,
+      DASH_ALPHA
+    );
   }
 
   for (const node of nodes) {
