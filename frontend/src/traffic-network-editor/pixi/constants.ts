@@ -21,3 +21,8 @@ export const ROAD_HIGHLIGHT_ALPHA = 0.15;
 
 export const GRID_SIZE = 20;
 export const GRID_MAJOR_EVERY = 5;
+
+export const DASH_LENGTH = 7;
+export const DASH_GAP = 5;
+export const DASH_COLOR = 0x000000;
+export const DASH_ALPHA = 0.1;
