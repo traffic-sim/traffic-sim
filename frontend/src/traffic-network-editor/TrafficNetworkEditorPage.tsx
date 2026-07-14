@@ -1,4 +1,5 @@
 import { PixiCanvas } from "./components/canvas";
+import { Toolbar } from "./components/toolbar";
 
 import "./TrafficNetworkEditorPage.css";
 
@@ -11,6 +12,7 @@ export function TrafficNetworkEditorPage() {
     <div className="traffic-network-editor-page">
       <div className="traffic-network-editor-page__hint">{EDITOR_HINT_TEXT}</div>
       <div className="traffic-network-editor-page__workspace">
+        <Toolbar />
         <PixiCanvas />
       </div>
     </div>
