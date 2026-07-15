@@ -1,5 +1,6 @@
 import type { RoadEdge, RoadNode } from "../../entities/network";
 
+import { EDGE_HIT_RADIUS, HIT_RADIUS } from "./constants";
 import { EditorTool } from "./EditorTool";
 import { findEdgeAt, findNodeAt } from "./hitTest";
 
@@ -13,6 +14,7 @@ export interface CanvasTapActions {
 
 export interface CanvasTapState {
   tool: EditorTool;
+  zoom: number;
   selectedNodeId: string | null;
   nodes: RoadNode[];
   edges: RoadEdge[];
@@ -24,11 +26,14 @@ export function handleCanvasTap(
   state: CanvasTapState,
   actions: CanvasTapActions
 ) {
-  const { tool, selectedNodeId, nodes, edges } = state;
+  const { tool, zoom, selectedNodeId, nodes, edges } = state;
   const { addNode, addEdge, selectNode, selectEdge, clearSelection } = actions;
 
+  const nodeRadius = HIT_RADIUS / zoom;
+  const edgeRadius = EDGE_HIT_RADIUS / zoom;
+
   if (tool === EditorTool.Draw) {
-    const existingId = findNodeAt(nodes, worldX, worldY);
+    const existingId = findNodeAt(nodes, worldX, worldY, nodeRadius);
     const clickedId = existingId ?? addNode(worldX, worldY);
 
     if (!selectedNodeId) {
@@ -43,14 +48,14 @@ export function handleCanvasTap(
   }
 
   if (tool === EditorTool.Select) {
-    const hitNode = findNodeAt(nodes, worldX, worldY);
+    const hitNode = findNodeAt(nodes, worldX, worldY, nodeRadius);
 
     if (hitNode) {
       selectNode(hitNode);
       return;
     }
 
-    const hitEdge = findEdgeAt(edges, nodes, worldX, worldY);
+    const hitEdge = findEdgeAt(edges, nodes, worldX, worldY, edgeRadius);
 
     if (hitEdge) {
       selectEdge(hitEdge);
