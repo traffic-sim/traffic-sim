@@ -3,8 +3,11 @@ import { useCallback, useRef } from "react";
 
 import { useNetworkStore } from "../../../entities/network";
 import { type Camera, panCamera, screenToWorld } from "../../model/camera";
+import { ENDPOINT_SNAP_RADIUS } from "../../model/constants";
 import { EditorTool } from "../../model/EditorTool";
+import { getEffectiveGridSize } from "../../model/grid";
 import { handleCanvasTap } from "../../model/handleCanvasTap";
+import { resolveSnap } from "../../model/snapping";
 import { useEditorUiStore } from "../../store/editorUiStore";
 
 const DRAG_THRESHOLD = 4;
@@ -34,21 +37,42 @@ export function useCanvasPan() {
   }, []);
 
   const handlePointerMove = useCallback((event: FederatedPointerEvent) => {
+    const editor = useEditorUiStore.getState();
     const state = drag.current;
 
-    if (!state) {
-      return;
+    if (state) {
+      const dx = event.global.x - state.startScreenX;
+      const dy = event.global.y - state.startScreenY;
+
+      if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
+        state.moved = true;
+      }
+
+      if (state.isPan) {
+        editor.setCamera(panCamera(state.startCamera, dx, dy));
+        return;
+      }
     }
 
-    const dx = event.global.x - state.startScreenX;
-    const dy = event.global.y - state.startScreenY;
+    if (editor.tool === EditorTool.Draw) {
+      const world = screenToWorld(event.global.x, event.global.y, editor.camera);
+      const nodes = useNetworkStore.getState().nodes;
+      const gridSize = getEffectiveGridSize(editor.camera.zoom);
 
-    if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
-      state.moved = true;
+      const snap = resolveSnap(
+        world.x,
+        world.y,
+        nodes,
+        ENDPOINT_SNAP_RADIUS / editor.camera.zoom,
+        gridSize
+      );
+
+      editor.setSnapPreview(snap);
     }
-    if (state.isPan) {
-      useEditorUiStore.getState().setCamera(panCamera(state.startCamera, dx, dy));
-    }
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    useEditorUiStore.getState().setSnapPreview(null);
   }, []);
 
   const endDrag = useCallback((event: FederatedPointerEvent, allowTap: boolean) => {
@@ -68,10 +92,10 @@ export function useCanvasPan() {
       world.y,
       {
         tool: editor.tool,
-        zoom: editor.camera.zoom,
         selectedNodeId: editor.selectedNodeId,
         nodes: network.nodes,
         edges: network.edges,
+        zoom: editor.camera.zoom,
       },
       {
         addNode: network.addNode,
@@ -93,5 +117,11 @@ export function useCanvasPan() {
     [endDrag]
   );
 
-  return { handlePointerDown, handlePointerMove, handlePointerUp, handlePointerUpOutside };
+  return {
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerUpOutside,
+    handlePointerLeave,
+  };
 }

@@ -6,6 +6,7 @@ import { useNetworkStore } from "../../../entities/network";
 import { COLORS } from "../../pixi/constants";
 import { drawGrid } from "../../pixi/renderGrid";
 import { drawNetwork } from "../../pixi/renderNetwork";
+import { drawSnapIndicator } from "../../pixi/renderSnapIndicator";
 import { useEditorUiStore } from "../../store/editorUiStore";
 
 import { useCanvasPan } from "./useCanvasPan";
@@ -21,13 +22,20 @@ export function PixiCanvas() {
   const size = useContainerSize(containerRef);
 
   const camera = useEditorUiStore((s) => s.camera);
+  const snapPreview = useEditorUiStore((s) => s.snapPreview);
   const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
   const selectedEdgeId = useEditorUiStore((s) => s.selectedEdgeId);
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
 
-  const { handlePointerDown, handlePointerMove, handlePointerUp, handlePointerUpOutside } =
-    useCanvasPan();
+  const {
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerUpOutside,
+    handlePointerLeave,
+  } = useCanvasPan();
+
   const handleWheel = useCanvasZoom();
 
   const handleDrawGrid = useCallback(
@@ -39,6 +47,11 @@ export function PixiCanvas() {
     (graphics: Graphics) =>
       drawNetwork({ graphics, nodes, edges, selectedNodeId, selectedEdgeId, camera }),
     [nodes, edges, selectedNodeId, selectedEdgeId, camera]
+  );
+
+  const handleDrawSnap = useCallback(
+    (graphics: Graphics) => drawSnapIndicator(graphics, snapPreview, camera),
+    [snapPreview, camera]
   );
 
   const hitArea = useMemo(
@@ -62,10 +75,12 @@ export function PixiCanvas() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerUpOutside={handlePointerUpOutside}
+          onPointerLeave={handlePointerLeave}
           onWheel={handleWheel}
         >
           <pixiGraphics draw={handleDrawGrid} />
           <pixiGraphics draw={handleDrawNetwork} />
+          <pixiGraphics draw={handleDrawSnap} />
         </pixiContainer>
       </Application>
     </div>
