@@ -1,9 +1,14 @@
 import type { RoadEdge, RoadNode } from "../../entities/network";
 
-export function findNodeAt(nodes: RoadNode[], x: number, y: number, radius: number): string | null {
+export function findNodeAt(
+  nodes: RoadNode[],
+  worldX: number,
+  worldY: number,
+  radius: number
+): string | null {
   for (const n of nodes) {
-    const dx = n.x - x;
-    const dy = n.y - y;
+    const dx = n.x - worldX;
+    const dy = n.y - worldY;
     if (dx * dx + dy * dy <= radius * radius) {
       return n.id;
     }
@@ -38,8 +43,8 @@ function distanceToSegment(
 export function findEdgeAt(
   edges: RoadEdge[],
   nodes: RoadNode[],
-  x: number,
-  y: number,
+  worldX: number,
+  worldY: number,
   radius: number
 ): string | null {
   for (const e of edges) {
@@ -50,7 +55,7 @@ export function findEdgeAt(
       continue;
     }
 
-    if (distanceToSegment(x, y, from.x, from.y, to.x, to.y) <= radius) {
+    if (distanceToSegment(worldX, worldY, from.x, from.y, to.x, to.y) <= radius) {
       return e.id;
     }
   }

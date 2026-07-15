@@ -1,8 +1,10 @@
 import type { RoadEdge, RoadNode } from "../../entities/network";
 
-import { EDGE_HIT_RADIUS, HIT_RADIUS } from "./constants";
+import { EDGE_HIT_RADIUS, ENDPOINT_SNAP_RADIUS, HIT_RADIUS } from "./constants";
 import { EditorTool } from "./EditorTool";
+import { getEffectiveGridSize } from "./grid";
 import { findEdgeAt, findNodeAt } from "./hitTest";
+import { resolveSnap } from "./snapping";
 
 export interface CanvasTapActions {
   addNode: (x: number, y: number) => string;
@@ -33,8 +35,10 @@ export function handleCanvasTap(
   const edgeRadius = EDGE_HIT_RADIUS / zoom;
 
   if (tool === EditorTool.Draw) {
-    const existingId = findNodeAt(nodes, worldX, worldY, nodeRadius);
-    const clickedId = existingId ?? addNode(worldX, worldY);
+    const gridSize = getEffectiveGridSize(zoom);
+
+    const snap = resolveSnap(worldX, worldY, nodes, ENDPOINT_SNAP_RADIUS / zoom, gridSize);
+    const clickedId = snap.nodeId ?? addNode(snap.x, snap.y);
 
     if (!selectedNodeId) {
       selectNode(clickedId);
@@ -44,6 +48,7 @@ export function handleCanvasTap(
       addEdge(selectedNodeId, clickedId);
       selectNode(null);
     }
+
     return;
   }
 
