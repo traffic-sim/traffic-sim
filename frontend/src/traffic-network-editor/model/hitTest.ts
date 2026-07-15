@@ -1,12 +1,10 @@
 import type { RoadEdge, RoadNode } from "../../entities/network";
 
-import { EDGE_HIT_RADIUS, HIT_RADIUS } from "./constants";
-
-export function findNodeAt(nodes: RoadNode[], x: number, y: number): string | null {
+export function findNodeAt(nodes: RoadNode[], x: number, y: number, radius: number): string | null {
   for (const n of nodes) {
     const dx = n.x - x;
     const dy = n.y - y;
-    if (dx * dx + dy * dy <= HIT_RADIUS * HIT_RADIUS) {
+    if (dx * dx + dy * dy <= radius * radius) {
       return n.id;
     }
   }
@@ -41,7 +39,8 @@ export function findEdgeAt(
   edges: RoadEdge[],
   nodes: RoadNode[],
   x: number,
-  y: number
+  y: number,
+  radius: number
 ): string | null {
   for (const e of edges) {
     const from = nodes.find((n) => n.id === e.from);
@@ -51,7 +50,7 @@ export function findEdgeAt(
       continue;
     }
 
-    if (distanceToSegment(x, y, from.x, from.y, to.x, to.y) <= EDGE_HIT_RADIUS) {
+    if (distanceToSegment(x, y, from.x, from.y, to.x, to.y) <= radius) {
       return e.id;
     }
   }

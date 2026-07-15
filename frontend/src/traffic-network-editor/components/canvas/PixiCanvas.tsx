@@ -1,15 +1,15 @@
 import { Application, extend } from "@pixi/react";
 import { Container, Graphics, Rectangle } from "pixi.js";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { useNetworkStore } from "../../../entities/network";
-import { DEFAULT_CAMERA } from "../../model/camera";
 import { COLORS } from "../../pixi/constants";
 import { drawGrid } from "../../pixi/renderGrid";
 import { drawNetwork } from "../../pixi/renderNetwork";
 import { useEditorUiStore } from "../../store/editorUiStore";
 
-import { useCanvasTap } from "./useCanvasTap";
+import { useCanvasPan } from "./useCanvasPan";
+import { useCanvasZoom } from "./useCanvasZoom";
 import { useContainerSize } from "./useContainerSize";
 
 import "./PixiCanvas.css";
@@ -19,14 +19,16 @@ extend({ Container, Graphics });
 export function PixiCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useContainerSize(containerRef);
-  const [camera] = useState(DEFAULT_CAMERA);
 
+  const camera = useEditorUiStore((s) => s.camera);
   const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
   const selectedEdgeId = useEditorUiStore((s) => s.selectedEdgeId);
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
 
-  const handlePointerTap = useCanvasTap(camera);
+  const { handlePointerDown, handlePointerMove, handlePointerUp, handlePointerUpOutside } =
+    useCanvasPan();
+  const handleWheel = useCanvasZoom();
 
   const handleDrawGrid = useCallback(
     (graphics: Graphics) => drawGrid(graphics, size.width, size.height, camera),
@@ -53,7 +55,15 @@ export function PixiCanvas() {
         background={COLORS.background}
         antialias
       >
-        <pixiContainer eventMode="static" hitArea={hitArea} onPointerTap={handlePointerTap}>
+        <pixiContainer
+          eventMode="static"
+          hitArea={hitArea}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerUpOutside={handlePointerUpOutside}
+          onWheel={handleWheel}
+        >
           <pixiGraphics draw={handleDrawGrid} />
           <pixiGraphics draw={handleDrawNetwork} />
         </pixiContainer>
