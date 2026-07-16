@@ -10,7 +10,7 @@ export function drawDashedLine(
   gapLength: number,
   color: number,
   alpha: number,
-  width = 0.8
+  width: number
 ) {
   const dx = x2 - x1;
   const dy = y2 - y1;
@@ -22,14 +22,15 @@ export function drawDashedLine(
 
   const ux = dx / length;
   const uy = dy / length;
-  const step = dashLength + gapLength;
 
+  const step = dashLength + gapLength;
   let dist = 0;
 
   while (dist < length) {
     const segEnd = Math.min(dist + dashLength, length);
 
     graphics.moveTo(x1 + ux * dist, y1 + uy * dist).lineTo(x1 + ux * segEnd, y1 + uy * segEnd);
+
     dist += step;
   }
 
