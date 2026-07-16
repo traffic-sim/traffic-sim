@@ -6,10 +6,11 @@ import { type Camera, worldToScreen } from "../model/camera";
 import {
   COLORS,
   DASH_ALPHA,
-  DASH_COLOR,
   DASH_GAP,
   DASH_LENGTH,
+  DASH_STROKE_WIDTH,
   NODE_RADIUS,
+  NODE_STROKE_WIDTH,
   ROAD_HIGHLIGHT_ALPHA,
   ROAD_HIGHLIGHT_WIDTH,
   ROAD_WIDTH,
@@ -72,8 +73,9 @@ export function drawNetwork(params: DrawNetworkParams) {
       toScreen.y,
       DASH_LENGTH * camera.zoom,
       DASH_GAP * camera.zoom,
-      DASH_COLOR,
-      DASH_ALPHA
+      COLORS.dash,
+      DASH_ALPHA,
+      DASH_STROKE_WIDTH
     );
   }
 
@@ -83,6 +85,6 @@ export function drawNetwork(params: DrawNetworkParams) {
     graphics
       .circle(point.x, point.y, NODE_RADIUS)
       .fill(isSelected ? COLORS.nodeSelected : COLORS.nodeDefault)
-      .stroke({ width: 2, color: COLORS.nodeStroke });
+      .stroke({ width: NODE_STROKE_WIDTH, color: COLORS.nodeStroke });
   }
 }

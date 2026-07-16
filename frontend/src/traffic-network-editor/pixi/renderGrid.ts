@@ -8,8 +8,6 @@ import { COLORS } from "./constants";
 export function drawGrid(g: Graphics, width: number, height: number, camera: Camera) {
   g.clear();
 
-  g.rect(0, 0, width, height).fill({ color: COLORS.background, alpha: 0 });
-
   const step = GRID_SIZE * camera.zoom;
   const majorStep = step * GRID_MAJOR_EVERY;
 
@@ -20,27 +18,31 @@ export function drawGrid(g: Graphics, width: number, height: number, camera: Cam
     const firstX = originX % step;
     const firstY = originY % step;
 
-    for (let x = firstX; x <= width; x += step) {
-      g.moveTo(Math.round(x) + 0.5, 0).lineTo(Math.round(x) + 0.5, height);
-    }
-
-    for (let y = firstY; y <= height; y += step) {
-      g.moveTo(0, Math.round(y) + 0.5).lineTo(width, Math.round(y) + 0.5);
-    }
-
-    g.stroke({ width: 1, color: COLORS.gridFine });
+    strokeGridLines(g, width, height, firstX, firstY, step, COLORS.gridFine);
   }
 
   const firstMajorX = originX % majorStep;
   const firstMajorY = originY % majorStep;
 
-  for (let x = firstMajorX; x <= width; x += majorStep) {
+  strokeGridLines(g, width, height, firstMajorX, firstMajorY, majorStep, COLORS.gridMajor);
+}
+
+function strokeGridLines(
+  g: Graphics,
+  width: number,
+  height: number,
+  firstX: number,
+  firstY: number,
+  step: number,
+  color: number
+) {
+  for (let x = firstX; x <= width; x += step) {
     g.moveTo(Math.round(x) + 0.5, 0).lineTo(Math.round(x) + 0.5, height);
   }
 
-  for (let y = firstMajorY; y <= height; y += majorStep) {
+  for (let y = firstY; y <= height; y += step) {
     g.moveTo(0, Math.round(y) + 0.5).lineTo(width, Math.round(y) + 0.5);
   }
 
-  g.stroke({ width: 1, color: COLORS.gridMajor });
+  g.stroke({ width: 1, color });
 }
