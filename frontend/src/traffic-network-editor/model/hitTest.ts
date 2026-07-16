@@ -7,12 +7,14 @@ export function findNodeAt(
   radius: number
 ): string | null {
   for (const n of nodes) {
-    const dx = n.x - worldX;
-    const dy = n.y - worldY;
+    const dx = n.position.x - worldX;
+    const dy = n.position.y - worldY;
+
     if (dx * dx + dy * dy <= radius * radius) {
       return n.id;
     }
   }
+
   return null;
 }
 
@@ -37,6 +39,7 @@ function distanceToSegment(
 
   const px = ax + t * dx;
   const py = ay + t * dy;
+
   return Math.hypot(x - px, y - py);
 }
 
@@ -55,7 +58,16 @@ export function findEdgeAt(
       continue;
     }
 
-    if (distanceToSegment(worldX, worldY, from.x, from.y, to.x, to.y) <= radius) {
+    if (
+      distanceToSegment(
+        worldX,
+        worldY,
+        from.position.x,
+        from.position.y,
+        to.position.x,
+        to.position.y
+      ) <= radius
+    ) {
       return e.id;
     }
   }

@@ -1,3 +1,5 @@
+import type { Vec2 } from "../../entities/Vec2";
+
 import { MAX_ZOOM, MIN_ZOOM } from "./constants";
 
 export interface Camera {
@@ -8,14 +10,14 @@ export interface Camera {
 
 export const DEFAULT_CAMERA: Camera = { x: 0, y: 0, zoom: 1 };
 
-export function screenToWorld(screenX: number, screenY: number, camera: Camera) {
+export function screenToWorld(screenX: number, screenY: number, camera: Camera): Vec2 {
   return {
     x: screenX / camera.zoom + camera.x,
     y: screenY / camera.zoom + camera.y,
   };
 }
 
-export function worldToScreen(worldX: number, worldY: number, camera: Camera) {
+export function worldToScreen(worldX: number, worldY: number, camera: Camera): Vec2 {
   return {
     x: (worldX - camera.x) * camera.zoom,
     y: (worldY - camera.y) * camera.zoom,
@@ -37,9 +39,11 @@ export function zoomCamera(
   factor: number
 ): Camera {
   const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, camera.zoom * factor));
+
   if (nextZoom === camera.zoom) {
     return camera;
   }
+
   return {
     zoom: nextZoom,
     x: camera.x + screenX * (1 / camera.zoom - 1 / nextZoom),

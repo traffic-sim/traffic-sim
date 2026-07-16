@@ -25,6 +25,7 @@ export function PixiCanvas() {
   const snapPreview = useEditorUiStore((s) => s.snapPreview);
   const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
   const selectedEdgeId = useEditorUiStore((s) => s.selectedEdgeId);
+
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
 

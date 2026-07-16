@@ -38,8 +38,8 @@ export function drawNetwork(params: DrawNetworkParams) {
       continue;
     }
 
-    const fromScreen = worldToScreen(from.x, from.y, camera);
-    const toScreen = worldToScreen(to.x, to.y, camera);
+    const fromScreen = worldToScreen(from.position.x, from.position.y, camera);
+    const toScreen = worldToScreen(to.position.x, to.position.y, camera);
     const isSelected = edge.id === selectedEdgeId;
 
     if (isSelected) {
@@ -81,7 +81,8 @@ export function drawNetwork(params: DrawNetworkParams) {
 
   for (const node of nodes) {
     const isSelected = node.id === selectedNodeId;
-    const point = worldToScreen(node.x, node.y, camera);
+    const point = worldToScreen(node.position.x, node.position.y, camera);
+
     graphics
       .circle(point.x, point.y, NODE_RADIUS)
       .fill(isSelected ? COLORS.nodeSelected : COLORS.nodeDefault)
