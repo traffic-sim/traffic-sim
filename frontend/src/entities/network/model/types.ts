@@ -1,7 +1,8 @@
+import type { Vec2 } from "../../Vec2";
+
 export interface RoadNode {
   id: string;
-  x: number;
-  y: number;
+  position: Vec2;
 }
 
 export interface RoadEdge {

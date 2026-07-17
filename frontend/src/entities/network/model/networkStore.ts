@@ -20,7 +20,7 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
 
     addNode: (x, y) => {
       const id = `n-${crypto.randomUUID()}`;
-      set((state) => ({ nodes: [...state.nodes, { id, x, y }] }));
+      set((state) => ({ nodes: [...state.nodes, { id, position: { x, y } }] }));
       return id;
     },
 

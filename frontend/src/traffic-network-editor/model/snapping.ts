@@ -13,7 +13,7 @@ export function resolveSnap(
   let nearestDist = Infinity;
 
   for (const n of nodes) {
-    const d = Math.hypot(n.x - worldX, n.y - worldY);
+    const d = Math.hypot(n.position.x - worldX, n.position.y - worldY);
 
     if (d <= endpointRadius && d < nearestDist) {
       nearestDist = d;
@@ -22,7 +22,12 @@ export function resolveSnap(
   }
 
   if (nearestNode) {
-    return { x: nearestNode.x, y: nearestNode.y, type: SnapType.Endpoint, nodeId: nearestNode.id };
+    return {
+      x: nearestNode.position.x,
+      y: nearestNode.position.y,
+      type: SnapType.Endpoint,
+      nodeId: nearestNode.id,
+    };
   }
 
   return {
