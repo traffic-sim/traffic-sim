@@ -71,5 +71,6 @@ export function findEdgeAt(
       return e.id;
     }
   }
+
   return null;
 }

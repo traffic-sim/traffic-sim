@@ -1,3 +1,14 @@
+export interface DeleteSelectionState {
+  selectedNodeId: string | null;
+  selectedEdgeId: string | null;
+}
+
+export interface DeleteSelectionActions {
+  removeNode: (id: string) => void;
+  removeEdge: (id: string) => void;
+  clearSelection: () => void;
+}
+
 export interface DeleteSelectionDeps {
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
@@ -6,8 +17,12 @@ export interface DeleteSelectionDeps {
   clearSelection: () => void;
 }
 
-export function handleDeleteSelection(deps: DeleteSelectionDeps) {
-  const { selectedNodeId, selectedEdgeId, removeNode, removeEdge, clearSelection } = deps;
+export function handleDeleteSelection(
+  state: DeleteSelectionState,
+  actions: DeleteSelectionActions
+) {
+  const { selectedNodeId, selectedEdgeId } = state;
+  const { removeNode, removeEdge, clearSelection } = actions;
 
   if (selectedNodeId) {
     removeNode(selectedNodeId);
