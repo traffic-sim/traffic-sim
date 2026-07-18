@@ -53,8 +53,9 @@ jobs:
 
       - uses: taiki-e/install-action@just
 
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli --version '^2' --locked
+      - uses: taiki-e/install-action@tauri-cli
+        with:
+          tool: tauri-cli@2
 
       - name: Build
         run: ${{ inputs.signed && 'just build-signed' || 'just build' }}
