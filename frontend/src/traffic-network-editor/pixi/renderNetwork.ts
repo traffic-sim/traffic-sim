@@ -1,9 +1,13 @@
 import type { Graphics } from "pixi.js";
 
 import type { RoadEdge, RoadNode } from "../../entities/network";
+import type { Vec2 } from "../../entities/Vec2";
 import { type Camera, worldToScreen } from "../model/camera";
 
 import {
+  ARROW_BACKSTEP_RATIO,
+  ARROW_HALF_WIDTH_RATIO,
+  ARROW_SIZE,
   COLORS,
   DASH_ALPHA,
   DASH_GAP,
@@ -13,6 +17,7 @@ import {
   NODE_STROKE_WIDTH,
   ROAD_HIGHLIGHT_ALPHA,
   ROAD_HIGHLIGHT_WIDTH,
+  ROAD_LABEL_MIN_ZOOM,
   ROAD_WIDTH,
 } from "./constants";
 import { drawDashedLine } from "./renderDashedLine";
@@ -24,6 +29,39 @@ interface DrawNetworkParams {
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
   camera: Camera;
+}
+
+function drawArrowhead(graphics: Graphics, fromScreen: Vec2, toScreen: Vec2) {
+  const dx = toScreen.x - fromScreen.x;
+  const dy = toScreen.y - fromScreen.y;
+
+  const len = Math.hypot(dx, dy);
+
+  if (len === 0) {
+    return;
+  }
+
+  const ux = dx / len;
+  const uy = dy / len;
+  const px = -uy;
+  const py = ux;
+
+  const mx = (fromScreen.x + toScreen.x) / 2;
+  const my = (fromScreen.y + toScreen.y) / 2;
+
+  const tipX = mx + ux * ARROW_SIZE;
+  const tipY = my + uy * ARROW_SIZE;
+
+  const baseLX =
+    mx - ux * ARROW_SIZE * ARROW_BACKSTEP_RATIO + px * ARROW_SIZE * ARROW_HALF_WIDTH_RATIO;
+  const baseLY =
+    my - uy * ARROW_SIZE * ARROW_BACKSTEP_RATIO + py * ARROW_SIZE * ARROW_HALF_WIDTH_RATIO;
+  const baseRX =
+    mx - ux * ARROW_SIZE * ARROW_BACKSTEP_RATIO - px * ARROW_SIZE * ARROW_HALF_WIDTH_RATIO;
+  const baseRY =
+    my - uy * ARROW_SIZE * ARROW_BACKSTEP_RATIO - py * ARROW_SIZE * ARROW_HALF_WIDTH_RATIO;
+
+  graphics.poly([tipX, tipY, baseLX, baseLY, baseRX, baseRY]).fill(COLORS.road);
 }
 
 export function drawNetwork(params: DrawNetworkParams) {
@@ -77,6 +115,10 @@ export function drawNetwork(params: DrawNetworkParams) {
       DASH_ALPHA,
       DASH_STROKE_WIDTH
     );
+
+    if (camera.zoom > ROAD_LABEL_MIN_ZOOM) {
+      drawArrowhead(graphics, fromScreen, toScreen);
+    }
   }
 
   for (const node of nodes) {
