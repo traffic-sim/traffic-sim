@@ -1,4 +1,5 @@
 import { Application, extend } from "@pixi/react";
+import type { FederatedPointerEvent } from "pixi.js";
 import { Container, Graphics, Rectangle } from "pixi.js";
 import { useCallback, useMemo, useRef } from "react";
 
@@ -16,6 +17,8 @@ import { RoadLabels } from "../roadLabels/RoadLabels";
 import { ScaleBar } from "../scaleBar/ScaleBar";
 
 import { useCanvasPan } from "./useCanvasPan";
+import { useCanvasSnapPreview } from "./useCanvasSnapPreview";
+import { useCanvasTap } from "./useCanvasTap";
 import { useCanvasZoom } from "./useCanvasZoom";
 import { useContainerSize } from "./useContainerSize";
 
@@ -45,15 +48,30 @@ export function PixiCanvas() {
     return nodeMap.get(selectedNodeId) ?? null;
   }, [tool, selectedNodeId, nodeMap]);
 
-  const {
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    handlePointerUpOutside,
-    handlePointerLeave,
-  } = useCanvasPan();
-
+  const { handlePointerDown, handlePointerMove, endDrag } = useCanvasPan();
+  const handleSnapPreview = useCanvasSnapPreview();
+  const handleTap = useCanvasTap();
   const handleWheel = useCanvasZoom();
+
+  const handlePointerUp = useCallback(
+    (event: FederatedPointerEvent) => {
+      if (endDrag(event, true)) {
+        handleTap(event);
+      }
+    },
+    [endDrag, handleTap]
+  );
+
+  const handlePointerUpOutside = useCallback(
+    (event: FederatedPointerEvent) => {
+      endDrag(event, false);
+    },
+    [endDrag]
+  );
+
+  const handlePointerLeave = useCallback(() => {
+    useEditorUiStore.getState().setSnapPreview(null);
+  }, []);
 
   const handleDrawGrid = useCallback(
     (graphics: Graphics) => drawGrid(graphics, size.width, size.height, camera),
@@ -111,7 +129,10 @@ export function PixiCanvas() {
           eventMode="static"
           hitArea={hitArea}
           onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
+          onPointerMove={(e: FederatedPointerEvent) => {
+            handlePointerMove(e);
+            handleSnapPreview(e);
+          }}
           onPointerUp={handlePointerUp}
           onPointerUpOutside={handlePointerUpOutside}
           onPointerLeave={handlePointerLeave}

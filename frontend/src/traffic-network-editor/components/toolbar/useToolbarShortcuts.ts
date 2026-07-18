@@ -29,13 +29,18 @@ export function useToolbarShortcuts(setTool: (tool: EditorTool) => void) {
         case "Backspace": {
           const network = useNetworkStore.getState();
           const editor = useEditorUiStore.getState();
-          handleDeleteSelection({
-            selectedNodeId: editor.selectedNodeId,
-            selectedEdgeId: editor.selectedEdgeId,
-            removeNode: network.removeNode,
-            removeEdge: network.removeEdge,
-            clearSelection: editor.clearSelection,
-          });
+
+          handleDeleteSelection(
+            {
+              selectedNodeId: editor.selectedNodeId,
+              selectedEdgeId: editor.selectedEdgeId,
+            },
+            {
+              removeNode: network.removeNode,
+              removeEdge: network.removeEdge,
+              clearSelection: editor.clearSelection,
+            }
+          );
           break;
         }
         case "Escape":
