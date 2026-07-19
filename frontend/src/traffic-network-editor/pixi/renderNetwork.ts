@@ -1,6 +1,6 @@
 import type { Graphics } from "pixi.js";
 
-import type { RoadEdge, RoadNode } from "../../entities/network";
+import type { Intersection, RoadEdge, RoadNode } from "../../entities/network";
 import type { Vec2 } from "../../entities/Vec2";
 import { type Camera, worldToScreen } from "../model/camera";
 
@@ -26,6 +26,7 @@ interface DrawNetworkParams {
   graphics: Graphics;
   nodes: RoadNode[];
   edges: RoadEdge[];
+  intersections: Record<string, Intersection>;
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
   camera: Camera;
@@ -65,7 +66,7 @@ function drawArrowhead(graphics: Graphics, fromScreen: Vec2, toScreen: Vec2) {
 }
 
 export function drawNetwork(params: DrawNetworkParams) {
-  const { graphics, nodes, edges, selectedNodeId, selectedEdgeId, camera } = params;
+  const { graphics, nodes, edges, intersections, selectedNodeId, selectedEdgeId, camera } = params;
   graphics.clear();
 
   for (const edge of edges) {
@@ -123,11 +124,18 @@ export function drawNetwork(params: DrawNetworkParams) {
 
   for (const node of nodes) {
     const isSelected = node.id === selectedNodeId;
+    const isIntersection = node.id in intersections;
     const point = worldToScreen(node.position.x, node.position.y, camera);
 
     graphics
       .circle(point.x, point.y, NODE_RADIUS)
-      .fill(isSelected ? COLORS.nodeSelected : COLORS.nodeDefault)
+      .fill(
+        isSelected
+          ? COLORS.nodeSelected
+          : isIntersection
+            ? COLORS.intersectionNode
+            : COLORS.nodeDefault
+      )
       .stroke({ width: NODE_STROKE_WIDTH, color: COLORS.nodeStroke });
   }
 }

@@ -66,6 +66,8 @@ html {
   --gray-500: #7a7a72;
   --gray-600: #4a4a4a;
   --gray-700: #888880;
+  --gray800: #2a2a28;
+  --gray900: #1a1a1a;
 
   /* ── Semantic aliases ────────────────────────────────────── */
   --bg: var(--gray-100);
@@ -85,8 +87,10 @@ html {
   --blue-light: #d4e0f5;
   --blue-pale: #b0c4e8;
   --blue-faint: #e8eef8;
+  --blueSlate: #6b7685;
   --red: #c0392b;
   --green: #1a7a4a;
+  --amber: #b5651d;
 
   /* ── Typography ────────────────────────────────────────────── */
   --font: "IBM Plex Sans", system-ui, -apple-system, sans-serif;

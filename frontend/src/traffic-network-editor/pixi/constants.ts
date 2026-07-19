@@ -9,6 +9,9 @@ export const COLORS = {
   nodeDefault: Colors.white,
   nodeSelected: Colors.blue,
   nodeStroke: Colors.blue,
+  intersectionNode: Colors.blueSlate,
+  intersectionBadge: Colors.white,
+  intersectionBadgePlate: Colors.amber,
   gridFine: Colors.gray200,
   gridMajor: Colors.gray300,
   label: Colors.gray600,
@@ -31,6 +34,10 @@ export const DASH_STROKE_WIDTH = 0.8;
 // ── 3. Node geometry ──────────────────────────────────────────────
 export const NODE_RADIUS = 8;
 export const NODE_STROKE_WIDTH = 2;
+
+// ── Intersection nodes ─────────────────────────────────────────────
+export const INTERSECTION_BADGE_FONT_SIZE = 11;
+export const INTERSECTION_BADGE_PLATE_RADIUS = 8;
 
 // ── 4. Arrow ──────────────────────────────────────────────────────
 export const ARROW_SIZE = 6;

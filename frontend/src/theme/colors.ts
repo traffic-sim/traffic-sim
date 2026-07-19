@@ -9,8 +9,12 @@ export const Colors = {
   gray500: 0x7a7a72,
   gray600: 0x4a4a4a,
   gray700: 0x888880,
+  gray800: 0x2a2a28,
+  gray900: 0x1a1a1a,
 
   blue: 0x0047ab,
   blueLight: 0xd4e0f5,
   bluePale: 0xb0c4e8,
+  blueSlate: 0x6b7685,
+  amber: 0xb5651d,
 } as const;

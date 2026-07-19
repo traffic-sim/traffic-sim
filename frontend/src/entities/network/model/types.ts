@@ -11,6 +11,11 @@ export interface RoadEdge {
   to: string;
 }
 
+export interface Intersection {
+  nodeId: string;
+  name: string;
+}
+
 export interface NetworkGraph {
   nodes: RoadNode[];
   edges: RoadEdge[];
