@@ -13,6 +13,7 @@ import { drawNetwork } from "../../pixi/renderNetwork";
 import { drawSnapIndicator } from "../../pixi/renderSnapIndicator";
 import { useEditorUiStore } from "../../store/editorUiStore";
 import { DrawHint } from "../drawHint/DrawHint";
+import { IntersectionBadges } from "../intersectionBadges/IntersectionBadges";
 import { RoadLabels } from "../roadLabels/RoadLabels";
 import { ScaleBar } from "../scaleBar/ScaleBar";
 
@@ -38,6 +39,7 @@ export function PixiCanvas() {
 
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
+  const intersections = useNetworkStore((s) => s.intersections);
 
   const nodeMap = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
 
@@ -80,8 +82,16 @@ export function PixiCanvas() {
 
   const handleDrawNetwork = useCallback(
     (graphics: Graphics) =>
-      drawNetwork({ graphics, nodes, edges, selectedNodeId, selectedEdgeId, camera }),
-    [nodes, edges, selectedNodeId, selectedEdgeId, camera]
+      drawNetwork({
+        graphics,
+        nodes,
+        edges,
+        intersections,
+        selectedNodeId,
+        selectedEdgeId,
+        camera,
+      }),
+    [nodes, edges, intersections, selectedNodeId, selectedEdgeId, camera]
   );
 
   const handleDrawSnap = useCallback(
@@ -141,6 +151,12 @@ export function PixiCanvas() {
           <pixiGraphics draw={handleDrawGrid} />
           <pixiGraphics draw={handleDrawNetwork} />
           <RoadLabels nodes={nodes} edges={edges} camera={camera} />
+          <IntersectionBadges
+            nodes={nodes}
+            edges={edges}
+            intersections={intersections}
+            camera={camera}
+          />
           <pixiGraphics draw={handleDrawSnap} />
           {tool === EditorTool.Draw && <pixiGraphics draw={handleDrawPreview} />}
         </pixiContainer>
