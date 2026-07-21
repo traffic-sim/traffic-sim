@@ -9,14 +9,6 @@ export interface DeleteSelectionActions {
   clearSelection: () => void;
 }
 
-export interface DeleteSelectionDeps {
-  selectedNodeId: string | null;
-  selectedEdgeId: string | null;
-  removeNode: (id: string) => void;
-  removeEdge: (id: string) => void;
-  clearSelection: () => void;
-}
-
 export function handleDeleteSelection(
   state: DeleteSelectionState,
   actions: DeleteSelectionActions

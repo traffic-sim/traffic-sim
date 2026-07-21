@@ -1,9 +1,6 @@
 import type { Intersection, RoadEdge } from "./types";
 
-export enum ArmDirection {
-  Inbound,
-  Outbound,
-}
+export type ArmDirection = "inbound" | "outbound";
 
 export interface IntersectionArm {
   edgeId: string;
@@ -15,9 +12,9 @@ export function getArms(nodeId: string, edges: RoadEdge[]) {
 
   for (const e of edges) {
     if (e.from === nodeId) {
-      arms.push({ edgeId: e.id, direction: ArmDirection.Outbound });
+      arms.push({ edgeId: e.id, direction: "outbound" });
     } else if (e.to === nodeId) {
-      arms.push({ edgeId: e.id, direction: ArmDirection.Inbound });
+      arms.push({ edgeId: e.id, direction: "inbound" });
     }
   }
 
@@ -38,35 +35,30 @@ export function buildArmsIndex(edges: RoadEdge[]) {
   };
 
   for (const e of edges) {
-    push(e.from, { edgeId: e.id, direction: ArmDirection.Outbound });
-    push(e.to, { edgeId: e.id, direction: ArmDirection.Inbound });
+    push(e.from, { edgeId: e.id, direction: "outbound" });
+    push(e.to, { edgeId: e.id, direction: "inbound" });
   }
 
   return index;
 }
 
-export enum IntersectionKind {
-  Chain,
-  Junction,
-  Merge,
-  Diverge,
-}
+export type IntersectionKind = "chain" | "junction" | "merge" | "diverge";
 
 export function getIntersectionKind(arms: IntersectionArm[]) {
-  const inbound = arms.filter((a) => a.direction === ArmDirection.Inbound).length;
+  const inbound = arms.filter((a) => a.direction === "inbound").length;
   const outbound = arms.length - inbound;
 
   if (inbound <= 1 && outbound <= 1) {
-    return IntersectionKind.Chain;
+    return "chain";
   }
   if (inbound > 1 && outbound <= 1) {
-    return IntersectionKind.Merge;
+    return "merge";
   }
   if (outbound > 1 && inbound <= 1) {
-    return IntersectionKind.Diverge;
+    return "diverge";
   }
 
-  return IntersectionKind.Junction;
+  return "junction";
 }
 
 export function syncIntersections(

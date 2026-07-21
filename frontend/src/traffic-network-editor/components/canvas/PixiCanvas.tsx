@@ -12,6 +12,7 @@ import { drawGrid } from "../../pixi/renderGrid";
 import { drawNetwork } from "../../pixi/renderNetwork";
 import { drawSnapIndicator } from "../../pixi/renderSnapIndicator";
 import { useEditorUiStore } from "../../store/editorUiStore";
+import { BoundaryBadges } from "../boundaryBadges/BoundaryBadges";
 import { DrawHint } from "../drawHint/DrawHint";
 import { IntersectionBadges } from "../intersectionBadges/IntersectionBadges";
 import { RoadLabels } from "../roadLabels/RoadLabels";
@@ -40,6 +41,7 @@ export function PixiCanvas() {
   const nodes = useNetworkStore((s) => s.nodes);
   const edges = useNetworkStore((s) => s.edges);
   const intersections = useNetworkStore((s) => s.intersections);
+  const boundaryNodes = useNetworkStore((s) => s.boundaryNodes);
 
   const nodeMap = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
 
@@ -157,6 +159,7 @@ export function PixiCanvas() {
             intersections={intersections}
             camera={camera}
           />
+          <BoundaryBadges nodes={nodes} boundaryNodes={boundaryNodes} camera={camera} />
           <pixiGraphics draw={handleDrawSnap} />
           {tool === EditorTool.Draw && <pixiGraphics draw={handleDrawPreview} />}
         </pixiContainer>

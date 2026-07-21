@@ -10,8 +10,10 @@ export const COLORS = {
   nodeSelected: Colors.blue,
   nodeStroke: Colors.blue,
   intersectionNode: Colors.blueSlate,
-  intersectionBadge: Colors.white,
+  badgeText: Colors.white,
   intersectionBadgePlate: Colors.amber,
+  sourceBadgePlate: Colors.green,
+  sinkBadgePlate: Colors.purple,
   gridFine: Colors.gray200,
   gridMajor: Colors.gray300,
   label: Colors.gray600,
@@ -35,9 +37,9 @@ export const DASH_STROKE_WIDTH = 0.8;
 export const NODE_RADIUS = 8;
 export const NODE_STROKE_WIDTH = 2;
 
-// ── Intersection nodes ─────────────────────────────────────────────
-export const INTERSECTION_BADGE_FONT_SIZE = 11;
-export const INTERSECTION_BADGE_PLATE_RADIUS = 8;
+// ── Badge ─────────────────────────────────────────────────────────
+export const BADGE_FONT_SIZE = 11;
+export const BADGE_PLATE_RADIUS = 8;
 
 // ── 4. Arrow ──────────────────────────────────────────────────────
 export const ARROW_SIZE = 6;
