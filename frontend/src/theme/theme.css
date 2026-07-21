@@ -83,14 +83,15 @@ html {
   --text-4: #b0b0a8;
 
   /* ── Accent colors ─────────────────────────────────────────── */
+  --amber: #b5651d;
   --blue: #0047ab;
   --blue-light: #d4e0f5;
   --blue-pale: #b0c4e8;
   --blue-faint: #e8eef8;
   --blueSlate: #6b7685;
+  --green: #2e7d4f;
+  --purple: #6a4c93;
   --red: #c0392b;
-  --green: #1a7a4a;
-  --amber: #b5651d;
 
   /* ── Typography ────────────────────────────────────────────── */
   --font: "IBM Plex Sans", system-ui, -apple-system, sans-serif;

@@ -16,5 +16,7 @@ export const Colors = {
   blueLight: 0xd4e0f5,
   bluePale: 0xb0c4e8,
   blueSlate: 0x6b7685,
+  green: 0x2e7d4f,
+  purple: 0x6a4c93,
   amber: 0xb5651d,
 } as const;

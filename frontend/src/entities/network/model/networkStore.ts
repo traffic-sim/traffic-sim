@@ -1,15 +1,22 @@
 import { create } from "zustand";
 
+import { syncBoundaryNodes } from "./boundaryNode";
 import { syncIntersections } from "./intersection";
-import type { Intersection, NetworkGraph, RoadEdge, RoadNode } from "./types";
+import type { BoundaryNode, Intersection, NetworkGraph, RoadEdge, RoadNode } from "./types";
 
 interface NetworkState {
   nodes: RoadNode[];
   edges: RoadEdge[];
   intersections: Record<string, Intersection>;
+  boundaryNodes: Record<string, BoundaryNode>;
   addNode: (x: number, y: number) => string;
   addEdge: (from: string, to: string) => void;
   flipEdgeDirection: (id: string) => void;
+  updateBoundaryNode: (
+    nodeId: string,
+    patch: Partial<Omit<BoundaryNode, "nodeId" | "role">>
+  ) => void;
+  updateBoundaryRole: (nodeId: string, patch: Partial<BoundaryNode["role"]>) => void;
   removeNode: (id: string) => void;
   removeEdge: (id: string) => void;
   setGraph: (graph: NetworkGraph) => void;
@@ -21,10 +28,20 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
     nodes: [],
     edges: [],
     intersections: {},
+    boundaryNodes: {},
 
     addNode: (x, y) => {
       const id = `n-${crypto.randomUUID()}`;
-      set((state) => ({ nodes: [...state.nodes, { id, position: { x, y } }] }));
+
+      set((state) => {
+        const nodes = [...state.nodes, { id, position: { x, y } }];
+
+        return {
+          nodes,
+          boundaryNodes: syncBoundaryNodes(state.edges, state.boundaryNodes, [id]),
+        };
+      });
+
       return id;
     },
 
@@ -49,6 +66,7 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
         return {
           edges,
           intersections: syncIntersections(edges, state.intersections, [from, to]),
+          boundaryNodes: syncBoundaryNodes(edges, state.boundaryNodes, [from, to]),
         };
       });
     },
@@ -57,6 +75,45 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
       set((state) => ({
         edges: state.edges.map((e) => (e.id === id ? { ...e, from: e.to, to: e.to } : e)),
       }));
+
+      const edge = get().edges.find((e) => e.id === id);
+
+      if (edge) {
+        set((state) => ({
+          boundaryNodes: syncBoundaryNodes(state.edges, state.boundaryNodes, [edge.from, edge.to]),
+        }));
+      }
+    },
+
+    updateBoundaryNode: (nodeId, patch) => {
+      set((state) => {
+        const existing = state.boundaryNodes[nodeId];
+
+        if (!existing) {
+          return state;
+        }
+
+        return {
+          boundaryNodes: { ...state.boundaryNodes, [nodeId]: { ...existing, ...patch } },
+        };
+      });
+    },
+
+    updateBoundaryRole: (nodeId, patch) => {
+      set((state) => {
+        const existing = state.boundaryNodes[nodeId];
+
+        if (!existing) {
+          return state;
+        }
+
+        return {
+          boundaryNodes: {
+            ...state.boundaryNodes,
+            [nodeId]: { ...existing, role: { ...existing.role, ...patch } as BoundaryNode["role"] },
+          },
+        };
+      });
     },
 
     removeNode: (id) => {
@@ -72,12 +129,14 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
         affected.delete(id);
 
         const edges = state.edges.filter((e) => e.from === id || e.to === id);
-        const { [id]: _removed, ...intersectionsWithoutSelf } = state.intersections;
+        const { [id]: _removedIx, ...intersectionsWithoutSelf } = state.intersections;
+        const { [id]: _removedBn, ...boundaryNodesWithoutSelf } = state.boundaryNodes;
 
         return {
           nodes: state.nodes.filter((n) => n.id !== id),
           edges,
           intersections: syncIntersections(edges, intersectionsWithoutSelf, [...affected]),
+          boundaryNodes: syncBoundaryNodes(edges, boundaryNodesWithoutSelf, [...affected]),
         };
       });
     },
@@ -91,6 +150,7 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
         return {
           edges,
           intersections: syncIntersections(edges, state.intersections, affected),
+          boundaryNodes: syncBoundaryNodes(edges, state.boundaryNodes, affected),
         };
       });
     },
@@ -104,10 +164,15 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
           {},
           graph.nodes.map((n) => n.id)
         ),
+        boundaryNodes: syncBoundaryNodes(
+          graph.edges,
+          {},
+          graph.nodes.map((n) => n.id)
+        ),
       }),
 
     reset: () => {
-      set({ nodes: [], edges: [], intersections: {} });
+      set({ nodes: [], edges: [], intersections: {}, boundaryNodes: {} });
     },
   };
 });

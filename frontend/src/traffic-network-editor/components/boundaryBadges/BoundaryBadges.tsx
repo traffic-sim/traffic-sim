@@ -1,51 +1,41 @@
-import type { Intersection, RoadEdge, RoadNode } from "../../../entities/network";
-import { buildArmsIndex, getIntersectionKind } from "../../../entities/network";
+import type { BoundaryNode, RoadNode } from "../../../entities/network";
 import { type Camera, worldToScreen } from "../../model/camera";
 import { BADGE_PLATE_RADIUS, COLORS, NODE_RADIUS, ROAD_LABEL_MIN_ZOOM } from "../../pixi/constants";
 import { NodeBadge } from "../nodeBadge/NodeBadge";
 
-const KIND_LABEL = { junction: "J", merge: "M", diverge: "D" } as const;
-
-export function IntersectionBadges({
+export function BoundaryBadges({
   nodes,
-  edges,
-  intersections,
+  boundaryNodes,
   camera,
 }: {
   nodes: RoadNode[];
-  edges: RoadEdge[];
-  intersections: Record<string, Intersection>;
+  boundaryNodes: Record<string, BoundaryNode>;
   camera: Camera;
 }) {
   if (camera.zoom <= ROAD_LABEL_MIN_ZOOM) {
     return null;
   }
 
-  const armsIndex = buildArmsIndex(edges);
-
   return (
     <>
       {nodes.map((node) => {
-        if (!(node.id in intersections)) {
-          return null;
-        }
+        const boundary = boundaryNodes[node.id];
 
-        const kind = getIntersectionKind(armsIndex.get(node.id) ?? []);
-
-        if (kind === "chain") {
+        if (!boundary) {
           return null;
         }
 
         const p = worldToScreen(node.position.x, node.position.y, camera);
         const badgeY = p.y - NODE_RADIUS - BADGE_PLATE_RADIUS - 4;
+        const isSource = boundary.role.kind === "source";
 
         return (
           <NodeBadge
             key={node.id}
             x={p.x}
             y={badgeY}
-            label={KIND_LABEL[kind]}
-            plateColor={COLORS.intersectionBadgePlate}
+            label={isSource ? "S" : "K"}
+            plateColor={isSource ? COLORS.sourceBadgePlate : COLORS.sinkBadgePlate}
           />
         );
       })}
