@@ -32,6 +32,7 @@ export const DASH_LENGTH = 7;
 export const DASH_GAP = 5;
 export const DASH_ALPHA = 0.1;
 export const DASH_STROKE_WIDTH = 0.8;
+export const ROAD_LABEL_OFFSET = 16;
 
 // ── 3. Node geometry ──────────────────────────────────────────────
 export const NODE_RADIUS = 8;
@@ -65,8 +66,8 @@ export const SCALE_BAR_OVERSHOOT_FACTOR = 1.4;
 export const SCALE_BAR_STROKE_WIDTH = 1.2;
 export const SCALE_BAR_TEXT_OFFSET = 16;
 
-// ── 8. Scale bar ──────────────────────────────────────────────────
-export const ROAD_LABEL_OFFSET = 16;
+// ── 8. Zoom thresholds ────────────────────────────────────────────
+export const LABEL_MIN_ZOOM = 0.4;
 
-// ── 9. Zoom thresholds ────────────────────────────────────────────
-export const ROAD_LABEL_MIN_ZOOM = 0.4;
+// ── 9. Generic Pixi constants ─────────────────────────────────────
+export const PIXEL_ALIGNMENT = 0.5;

@@ -5,7 +5,7 @@ import { type Camera, worldToScreen } from "../model/camera";
 
 import { COLORS, PREVIEW_LINE_ALPHA, PREVIEW_LINE_WIDTH } from "./constants";
 
-export function drawPreviewLine(
+export function renderPreviewLine(
   graphics: Graphics,
   fromWorld: Vec2 | null,
   toWorld: Vec2 | null,

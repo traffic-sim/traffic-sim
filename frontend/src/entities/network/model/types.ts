@@ -44,6 +44,6 @@ export interface BoundaryNode {
 }
 
 export interface NetworkGraph {
-  nodes: RoadNode[];
-  edges: RoadEdge[];
+  nodes: Record<string, RoadNode>;
+  edges: Record<string, RoadEdge>;
 }

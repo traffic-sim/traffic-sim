@@ -51,12 +51,15 @@ export function useCanvasPan() {
     }
   }, []);
 
-  const endDrag = useCallback((event: FederatedPointerEvent, allowTap: boolean): boolean => {
-    const state = drag.current;
-    drag.current = null;
+  const endDrag = useCallback(
+    (event: FederatedPointerEvent, shouldTriggerTap: boolean): boolean => {
+      const state = drag.current;
+      drag.current = null;
 
-    return !!state && allowTap && !state.isPan && !state.moved && event.button === 0;
-  }, []);
+      return !!state && shouldTriggerTap && !state.isPan && !state.moved && event.button === 0;
+    },
+    []
+  );
 
   return {
     drag,

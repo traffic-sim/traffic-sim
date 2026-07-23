@@ -23,6 +23,7 @@ export function NodeBadge({
     },
     [x, y, plateColor]
   );
+
   return (
     <>
       <pixiGraphics draw={drawPlate} />

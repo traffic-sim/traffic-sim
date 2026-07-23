@@ -1,14 +1,16 @@
 import { create } from "zustand";
 
 import { syncBoundaryNodes } from "./boundaryNode";
+import { buildGraphIndex, type GraphIndex } from "./graphIndex";
 import { syncIntersections } from "./intersection";
 import type { BoundaryNode, Intersection, NetworkGraph, RoadEdge, RoadNode } from "./types";
 
 interface NetworkState {
-  nodes: RoadNode[];
-  edges: RoadEdge[];
+  nodes: Record<string, RoadNode>;
+  edges: Record<string, RoadEdge>;
   intersections: Record<string, Intersection>;
   boundaryNodes: Record<string, BoundaryNode>;
+  graphIndex: GraphIndex;
   addNode: (x: number, y: number) => string;
   addEdge: (from: string, to: string) => void;
   flipEdgeDirection: (id: string) => void;
@@ -25,20 +27,21 @@ interface NetworkState {
 
 export const useNetworkStore = create<NetworkState>((set, get) => {
   return {
-    nodes: [],
-    edges: [],
+    nodes: {},
+    edges: {},
     intersections: {},
     boundaryNodes: {},
+    graphIndex: buildGraphIndex({}),
 
     addNode: (x, y) => {
       const id = `n-${crypto.randomUUID()}`;
 
       set((state) => {
-        const nodes = [...state.nodes, { id, position: { x, y } }];
+        const nodes = { ...state.nodes, [id]: { id, position: { x, y } } };
 
         return {
           nodes,
-          boundaryNodes: syncBoundaryNodes(state.edges, state.boundaryNodes, [id]),
+          boundaryNodes: syncBoundaryNodes(state.graphIndex, state.boundaryNodes, [id]),
         };
       });
 
@@ -50,7 +53,7 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
         return;
       }
 
-      const exists = get().edges.some(
+      const exists = Object.values(get().edges).some(
         (e) => (e.from === from && e.to === to) || (e.from === to && e.to === from)
       );
 
@@ -61,38 +64,50 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
       const id = `e-${crypto.randomUUID()}`;
 
       set((state) => {
-        const edges = [...state.edges, { id, from, to }];
+        const edges = { ...state.edges, [id]: { id, from, to } };
+        const graphIndex = buildGraphIndex(edges);
 
         return {
           edges,
-          intersections: syncIntersections(edges, state.intersections, [from, to]),
-          boundaryNodes: syncBoundaryNodes(edges, state.boundaryNodes, [from, to]),
+          intersections: syncIntersections(graphIndex, state.intersections, [from, to]),
+          boundaryNodes: syncBoundaryNodes(graphIndex, state.boundaryNodes, [from, to]),
+          graphIndex,
         };
       });
     },
 
     flipEdgeDirection: (id) => {
-      set((state) => ({
-        edges: state.edges.map((e) => (e.id === id ? { ...e, from: e.to, to: e.to } : e)),
-      }));
+      const edge = get().edges[id];
 
-      const edge = get().edges.find((e) => e.id === id);
-
-      if (edge) {
-        set((state) => ({
-          boundaryNodes: syncBoundaryNodes(state.edges, state.boundaryNodes, [edge.from, edge.to]),
-        }));
+      if (!edge) {
+        return;
       }
+
+      set((state) => {
+        const edges = {
+          ...state.edges,
+          [id]: { ...edge, from: edge.to, to: edge.from },
+        };
+
+        const graphIndex = buildGraphIndex(edges);
+
+        return {
+          edges,
+
+          boundaryNodes: syncBoundaryNodes(graphIndex, state.boundaryNodes, [edge.from, edge.to]),
+          graphIndex,
+        };
+      });
     },
 
     updateBoundaryNode: (nodeId, patch) => {
+      const existing = get().boundaryNodes[nodeId];
+
+      if (!existing) {
+        return;
+      }
+
       set((state) => {
-        const existing = state.boundaryNodes[nodeId];
-
-        if (!existing) {
-          return state;
-        }
-
         return {
           boundaryNodes: { ...state.boundaryNodes, [nodeId]: { ...existing, ...patch } },
         };
@@ -118,61 +133,74 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
 
     removeNode: (id) => {
       set((state) => {
-        const removedEdges = state.edges.filter((e) => e.from === id || e.to === id);
         const affected = new Set<string>();
 
-        for (const e of removedEdges) {
-          affected.add(e.from);
-          affected.add(e.to);
+        for (const e of Object.values(state.edges)) {
+          if (e.from === id || e.to === id) {
+            affected.add(e.from);
+            affected.add(e.to);
+          }
         }
 
         affected.delete(id);
 
-        const edges = state.edges.filter((e) => e.from === id || e.to === id);
-        const { [id]: _removedIx, ...intersectionsWithoutSelf } = state.intersections;
-        const { [id]: _removedBn, ...boundaryNodesWithoutSelf } = state.boundaryNodes;
+        const { [id]: _, ...nodes } = state.nodes;
+        const edges = Object.fromEntries(
+          Object.entries(state.edges).filter(([_, e]) => e.from !== id && e.to !== id)
+        );
+
+        const { [id]: __, ...intersections } = state.intersections;
+        const { [id]: ___, ...boundaryNodes } = state.boundaryNodes;
+
+        const graphIndex = buildGraphIndex(edges);
 
         return {
-          nodes: state.nodes.filter((n) => n.id !== id),
+          nodes,
           edges,
-          intersections: syncIntersections(edges, intersectionsWithoutSelf, [...affected]),
-          boundaryNodes: syncBoundaryNodes(edges, boundaryNodesWithoutSelf, [...affected]),
+          intersections: syncIntersections(graphIndex, intersections, [...affected]),
+          boundaryNodes: syncBoundaryNodes(graphIndex, boundaryNodes, [...affected]),
+          graphIndex,
         };
       });
     },
 
     removeEdge: (id) => {
       set((state) => {
-        const removed = state.edges.find((e) => e.id === id);
-        const edges = state.edges.filter((e) => e.id !== id);
+        const removed = state.edges[id];
+        const { [id]: _, ...edges } = state.edges;
         const affected = removed ? [removed.from, removed.to] : [];
-
+        const graphIndex = buildGraphIndex(edges);
         return {
           edges,
-          intersections: syncIntersections(edges, state.intersections, affected),
-          boundaryNodes: syncBoundaryNodes(edges, state.boundaryNodes, affected),
+          intersections: syncIntersections(graphIndex, state.intersections, affected),
+          boundaryNodes: syncBoundaryNodes(graphIndex, state.boundaryNodes, affected),
+          graphIndex,
         };
       });
     },
 
-    setGraph: (graph) =>
-      set({
-        nodes: graph.nodes,
-        edges: graph.edges,
-        intersections: syncIntersections(
-          graph.edges,
-          {},
-          graph.nodes.map((n) => n.id)
-        ),
-        boundaryNodes: syncBoundaryNodes(
-          graph.edges,
-          {},
-          graph.nodes.map((n) => n.id)
-        ),
-      }),
+    setGraph: (graph) => {
+      set((_) => {
+        const graphIndex = buildGraphIndex(graph.edges);
+
+        return {
+          nodes: graph.nodes,
+          edges: graph.edges,
+          intersections: syncIntersections(graphIndex, {}, Object.keys(graph.nodes)),
+          boundaryNodes: syncBoundaryNodes(graphIndex, {}, Object.keys(graph.nodes)),
+          graphIndex,
+        };
+      });
+    },
 
     reset: () => {
-      set({ nodes: [], edges: [], intersections: {}, boundaryNodes: {} });
+      set({
+        nodes: {},
+        edges: {},
+        intersections: {},
+        boundaryNodes: {},
+        graphIndex: buildGraphIndex({}),
+      });
     },
   };
 });

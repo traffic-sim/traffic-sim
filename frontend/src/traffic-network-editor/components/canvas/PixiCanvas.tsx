@@ -1,14 +1,14 @@
 import { Application, extend } from "@pixi/react";
 import type { FederatedPointerEvent } from "pixi.js";
-import { Container, Graphics, Rectangle } from "pixi.js";
+import { Container, Graphics, Rectangle, Text } from "pixi.js";
 import { useCallback, useMemo, useRef } from "react";
 
 import { useNetworkStore } from "../../../entities/network";
 import { worldToScreen } from "../../model/camera";
 import { EditorTool } from "../../model/EditorTool";
 import { COLORS } from "../../pixi/constants";
-import { drawPreviewLine } from "../../pixi/renderDrawPreview";
-import { drawGrid } from "../../pixi/renderGrid";
+import { renderPreviewLine } from "../../pixi/renderDrawPreview";
+import { renderGrid } from "../../pixi/renderGrid";
 import { drawNetwork } from "../../pixi/renderNetwork";
 import { drawSnapIndicator } from "../../pixi/renderSnapIndicator";
 import { useEditorUiStore } from "../../store/editorUiStore";
@@ -26,7 +26,7 @@ import { useContainerSize } from "./useContainerSize";
 
 import "./PixiCanvas.css";
 
-extend({ Container, Graphics });
+extend({ Container, Graphics, Text });
 
 export function PixiCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,15 +42,12 @@ export function PixiCanvas() {
   const edges = useNetworkStore((s) => s.edges);
   const intersections = useNetworkStore((s) => s.intersections);
   const boundaryNodes = useNetworkStore((s) => s.boundaryNodes);
+  const graphIndex = useNetworkStore((s) => s.graphIndex);
 
-  const nodeMap = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
+  const startNode =
+    tool === EditorTool.Draw && selectedNodeId ? (nodes[selectedNodeId] ?? null) : null;
 
-  const startNode = useMemo(() => {
-    if (tool !== EditorTool.Draw || !selectedNodeId) {
-      return null;
-    }
-    return nodeMap.get(selectedNodeId) ?? null;
-  }, [tool, selectedNodeId, nodeMap]);
+  const hintPos = snapPreview ? worldToScreen(snapPreview.x, snapPreview.y, camera) : null;
 
   const { handlePointerDown, handlePointerMove, endDrag } = useCanvasPan();
   const handleSnapPreview = useCanvasSnapPreview();
@@ -78,7 +75,7 @@ export function PixiCanvas() {
   }, []);
 
   const handleDrawGrid = useCallback(
-    (graphics: Graphics) => drawGrid(graphics, size.width, size.height, camera),
+    (graphics: Graphics) => renderGrid(graphics, size.width, size.height, camera),
     [size.width, size.height, camera]
   );
 
@@ -101,27 +98,11 @@ export function PixiCanvas() {
     [snapPreview, camera]
   );
 
-  const previewTarget = useMemo(() => {
-    if (!snapPreview) {
-      return null;
-    }
-
-    return { x: snapPreview.x, y: snapPreview.y };
-  }, [snapPreview]);
-
   const handleDrawPreview = useCallback(
     (graphics: Graphics) =>
-      drawPreviewLine(graphics, startNode?.position ?? null, previewTarget, camera),
-    [startNode, previewTarget, camera]
+      renderPreviewLine(graphics, startNode?.position ?? null, snapPreview, camera),
+    [startNode, snapPreview, camera]
   );
-
-  const hintPos = useMemo(() => {
-    if (!snapPreview) {
-      return null;
-    }
-
-    return worldToScreen(snapPreview.x, snapPreview.y, camera);
-  }, [snapPreview, camera]);
 
   const hitArea = useMemo(
     () => new Rectangle(0, 0, size.width, size.height),
@@ -153,12 +134,7 @@ export function PixiCanvas() {
           <pixiGraphics draw={handleDrawGrid} />
           <pixiGraphics draw={handleDrawNetwork} />
           <RoadLabels nodes={nodes} edges={edges} camera={camera} />
-          <IntersectionBadges
-            nodes={nodes}
-            edges={edges}
-            intersections={intersections}
-            camera={camera}
-          />
+          <IntersectionBadges nodes={nodes} graphIndex={graphIndex} camera={camera} />
           <BoundaryBadges nodes={nodes} boundaryNodes={boundaryNodes} camera={camera} />
           <pixiGraphics draw={handleDrawSnap} />
           {tool === EditorTool.Draw && <pixiGraphics draw={handleDrawPreview} />}

@@ -1,4 +1,5 @@
-import type { Intersection, RoadEdge } from "./types";
+import type { GraphIndex } from "./graphIndex";
+import type { Intersection } from "./types";
 
 export type ArmDirection = "inbound" | "outbound";
 
@@ -7,46 +8,11 @@ export interface IntersectionArm {
   direction: ArmDirection;
 }
 
-export function getArms(nodeId: string, edges: RoadEdge[]) {
-  const arms: IntersectionArm[] = [];
-
-  for (const e of edges) {
-    if (e.from === nodeId) {
-      arms.push({ edgeId: e.id, direction: "outbound" });
-    } else if (e.to === nodeId) {
-      arms.push({ edgeId: e.id, direction: "inbound" });
-    }
-  }
-
-  return arms;
-}
-
-export function buildArmsIndex(edges: RoadEdge[]) {
-  const index = new Map<string, IntersectionArm[]>();
-
-  const push = (nodeId: string, arm: IntersectionArm) => {
-    const list = index.get(nodeId);
-
-    if (list) {
-      list.push(arm);
-    } else {
-      index.set(nodeId, [arm]);
-    }
-  };
-
-  for (const e of edges) {
-    push(e.from, { edgeId: e.id, direction: "outbound" });
-    push(e.to, { edgeId: e.id, direction: "inbound" });
-  }
-
-  return index;
-}
-
 export type IntersectionKind = "chain" | "junction" | "merge" | "diverge";
 
-export function getIntersectionKind(arms: IntersectionArm[]) {
-  const inbound = arms.filter((a) => a.direction === "inbound").length;
-  const outbound = arms.length - inbound;
+export function getIntersectionKind(index: GraphIndex, nodeId: string) {
+  const inbound = index.inboundCount[nodeId] ?? 0;
+  const outbound = index.outboundCount[nodeId] ?? 0;
 
   if (inbound <= 1 && outbound <= 1) {
     return "chain";
@@ -62,15 +28,15 @@ export function getIntersectionKind(arms: IntersectionArm[]) {
 }
 
 export function syncIntersections(
-  edges: RoadEdge[],
+  index: GraphIndex,
   intersections: Record<string, Intersection>,
   affectedNodeIds: string[]
 ) {
   let next = intersections;
 
   for (const nodeId of affectedNodeIds) {
-    const degree = getArms(nodeId, edges).length;
-    const exists = nodeId in next;
+    const degree = index.armsIndex[nodeId]?.length ?? 0;
+    const exists = Object.hasOwn(next, nodeId);
 
     if (degree >= 2 && !exists) {
       next = { ...next, [nodeId]: { nodeId, name: nodeId } };

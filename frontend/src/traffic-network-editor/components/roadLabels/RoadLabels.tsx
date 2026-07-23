@@ -1,32 +1,27 @@
-import { extend } from "@pixi/react";
-import { Text } from "pixi.js";
-
 import type { RoadEdge, RoadNode } from "../../../entities/network";
 import { type Camera, worldToScreen } from "../../model/camera";
-import { ROAD_LABEL_MIN_ZOOM, ROAD_LABEL_OFFSET } from "../../pixi/constants";
+import { LABEL_MIN_ZOOM, ROAD_LABEL_OFFSET } from "../../pixi/constants";
 
 import { TextStyle } from "./textStyle";
-
-extend({ Text });
 
 export function RoadLabels({
   nodes,
   edges,
   camera,
 }: {
-  nodes: RoadNode[];
-  edges: RoadEdge[];
+  nodes: Record<string, RoadNode>;
+  edges: Record<string, RoadEdge>;
   camera: Camera;
 }) {
-  if (camera.zoom <= ROAD_LABEL_MIN_ZOOM) {
+  if (camera.zoom <= LABEL_MIN_ZOOM) {
     return null;
   }
 
   return (
     <>
-      {edges.map((edge) => {
-        const from = nodes.find((n) => n.id === edge.from);
-        const to = nodes.find((n) => n.id === edge.to);
+      {Object.values(edges).map((edge) => {
+        const from = nodes[edge.from];
+        const to = nodes[edge.to];
 
         if (!from || !to) {
           return null;
