@@ -5,14 +5,14 @@ import { type SnapResult, SnapType } from "./SnapResult";
 export function resolveSnap(
   worldX: number,
   worldY: number,
-  nodes: RoadNode[],
+  nodes: Record<string, RoadNode>,
   endpointRadius: number,
   gridSize: number
 ): SnapResult {
   let nearestNode: RoadNode | null = null;
   let nearestDist = Infinity;
 
-  for (const n of nodes) {
+  for (const n of Object.values(nodes)) {
     const d = Math.hypot(n.position.x - worldX, n.position.y - worldY);
 
     if (d <= endpointRadius && d < nearestDist) {

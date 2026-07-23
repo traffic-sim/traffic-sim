@@ -1,6 +1,7 @@
 import type { BoundaryNode, RoadNode } from "../../../entities/network";
 import { type Camera, worldToScreen } from "../../model/camera";
-import { BADGE_PLATE_RADIUS, COLORS, NODE_RADIUS, ROAD_LABEL_MIN_ZOOM } from "../../pixi/constants";
+import { COLORS, LABEL_MIN_ZOOM } from "../../pixi/constants";
+import { calculateBadgeY } from "../nodeBadge/calculateBadgeY";
 import { NodeBadge } from "../nodeBadge/NodeBadge";
 
 export function BoundaryBadges({
@@ -8,17 +9,17 @@ export function BoundaryBadges({
   boundaryNodes,
   camera,
 }: {
-  nodes: RoadNode[];
+  nodes: Record<string, RoadNode>;
   boundaryNodes: Record<string, BoundaryNode>;
   camera: Camera;
 }) {
-  if (camera.zoom <= ROAD_LABEL_MIN_ZOOM) {
+  if (camera.zoom <= LABEL_MIN_ZOOM) {
     return null;
   }
 
   return (
     <>
-      {nodes.map((node) => {
+      {Object.values(nodes).map((node) => {
         const boundary = boundaryNodes[node.id];
 
         if (!boundary) {
@@ -26,14 +27,13 @@ export function BoundaryBadges({
         }
 
         const p = worldToScreen(node.position.x, node.position.y, camera);
-        const badgeY = p.y - NODE_RADIUS - BADGE_PLATE_RADIUS - 4;
         const isSource = boundary.role.kind === "source";
 
         return (
           <NodeBadge
             key={node.id}
             x={p.x}
-            y={badgeY}
+            y={calculateBadgeY(p.y)}
             label={isSource ? "S" : "K"}
             plateColor={isSource ? COLORS.sourceBadgePlate : COLORS.sinkBadgePlate}
           />

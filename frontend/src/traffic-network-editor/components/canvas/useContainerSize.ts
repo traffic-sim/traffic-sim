@@ -5,15 +5,14 @@ export function useContainerSize(ref: RefObject<HTMLElement | null>) {
 
   useEffect(() => {
     const el = ref.current;
+
     if (!el) {
       return;
     }
 
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      if (width > 0 && height > 0) {
-        setSize({ width, height });
-      }
+      setSize({ width, height });
     });
 
     observer.observe(el);

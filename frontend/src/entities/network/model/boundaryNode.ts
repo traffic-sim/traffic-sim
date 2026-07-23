@@ -1,42 +1,19 @@
 import { DEFAULT_SCENARIO, DEFAULT_SINK_CAPACITY } from "./constants";
-import type { BoundaryNode, RoadEdge } from "./types";
+import type { GraphIndex } from "./graphIndex";
+import type { IntersectionArm } from "./intersection";
+import type { BoundaryNode } from "./types";
 
-function getDegree(nodeId: string, edges: RoadEdge[]): number {
-  let degree = 0;
-
-  for (const e of edges) {
-    if (e.from === nodeId || e.to === nodeId) {
-      degree++;
-    }
-  }
-
-  return degree;
-}
-
-function getBoundaryEdge(
+function deriveRoleKind(
   nodeId: string,
-  edges: RoadEdge[]
-): { edge: RoadEdge; end: "from" | "to" } | null {
-  for (const e of edges) {
-    if (e.from === nodeId) {
-      return { edge: e, end: "from" };
-    }
-    if (e.to === nodeId) {
-      return { edge: e, end: "to" };
-    }
-  }
+  armsIndex: Record<string, IntersectionArm[]>
+): "source" | "sink" | null {
+  const arms = armsIndex[nodeId];
 
-  return null;
-}
-
-function deriveRoleKind(nodeId: string, edges: RoadEdge[]): "source" | "sink" | null {
-  const boundary = getBoundaryEdge(nodeId, edges);
-
-  if (!boundary) {
+  if (!arms || arms.length !== 1) {
     return null;
   }
 
-  return boundary.end === "from" ? "source" : "sink";
+  return arms[0].direction === "outbound" ? "source" : "sink";
 }
 
 function defaultRoleFor(kind: "source" | "sink"): BoundaryNode["role"] {
@@ -46,15 +23,16 @@ function defaultRoleFor(kind: "source" | "sink"): BoundaryNode["role"] {
 }
 
 export function syncBoundaryNodes(
-  edges: RoadEdge[],
+  index: GraphIndex,
   boundaryNodes: Record<string, BoundaryNode>,
   affectedNodeIds: string[]
 ): Record<string, BoundaryNode> {
   let next = boundaryNodes;
 
   for (const nodeId of affectedNodeIds) {
-    const degree = getDegree(nodeId, edges);
-    const roleKind = degree === 1 ? deriveRoleKind(nodeId, edges) : null;
+    const degree = index.degreeIndex[nodeId] ?? 0;
+    const roleKind = degree === 1 ? deriveRoleKind(nodeId, index.armsIndex) : null;
+
     const existing = next[nodeId];
 
     if (roleKind === null) {

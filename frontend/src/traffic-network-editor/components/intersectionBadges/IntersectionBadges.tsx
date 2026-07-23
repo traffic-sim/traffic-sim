@@ -1,49 +1,44 @@
-import type { Intersection, RoadEdge, RoadNode } from "../../../entities/network";
-import { buildArmsIndex, getIntersectionKind } from "../../../entities/network";
+import type { RoadNode } from "../../../entities/network";
+import { getIntersectionKind } from "../../../entities/network";
+import type { GraphIndex } from "../../../entities/network/model/graphIndex";
 import { type Camera, worldToScreen } from "../../model/camera";
-import { BADGE_PLATE_RADIUS, COLORS, NODE_RADIUS, ROAD_LABEL_MIN_ZOOM } from "../../pixi/constants";
+import { COLORS, LABEL_MIN_ZOOM } from "../../pixi/constants";
+import { calculateBadgeY } from "../nodeBadge/calculateBadgeY";
 import { NodeBadge } from "../nodeBadge/NodeBadge";
 
 const KIND_LABEL = { junction: "J", merge: "M", diverge: "D" } as const;
 
 export function IntersectionBadges({
   nodes,
-  edges,
-  intersections,
+  graphIndex,
   camera,
 }: {
-  nodes: RoadNode[];
-  edges: RoadEdge[];
-  intersections: Record<string, Intersection>;
+  nodes: Record<string, RoadNode>;
+  graphIndex: GraphIndex;
   camera: Camera;
 }) {
-  if (camera.zoom <= ROAD_LABEL_MIN_ZOOM) {
+  if (camera.zoom <= LABEL_MIN_ZOOM) {
     return null;
   }
 
-  const armsIndex = buildArmsIndex(edges);
-
   return (
     <>
-      {nodes.map((node) => {
-        if (!(node.id in intersections)) {
-          return null;
-        }
+      {Object.keys(graphIndex.armsIndex).map((nodeId) => {
+        const node = nodes[nodeId];
 
-        const kind = getIntersectionKind(armsIndex.get(node.id) ?? []);
+        const kind = getIntersectionKind(graphIndex, nodeId);
 
         if (kind === "chain") {
           return null;
         }
 
         const p = worldToScreen(node.position.x, node.position.y, camera);
-        const badgeY = p.y - NODE_RADIUS - BADGE_PLATE_RADIUS - 4;
 
         return (
           <NodeBadge
-            key={node.id}
+            key={nodeId}
             x={p.x}
-            y={badgeY}
+            y={calculateBadgeY(p.y)}
             label={KIND_LABEL[kind]}
             plateColor={COLORS.intersectionBadgePlate}
           />

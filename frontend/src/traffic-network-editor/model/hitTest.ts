@@ -1,17 +1,17 @@
 import type { RoadEdge, RoadNode } from "../../entities/network";
 
 export function findNodeAt(
-  nodes: RoadNode[],
+  nodes: Record<string, RoadNode>,
   worldX: number,
   worldY: number,
   radius: number
 ): string | null {
-  for (const n of nodes) {
+  for (const [id, n] of Object.entries(nodes)) {
     const dx = n.position.x - worldX;
     const dy = n.position.y - worldY;
 
     if (dx * dx + dy * dy <= radius * radius) {
-      return n.id;
+      return id;
     }
   }
 
@@ -44,15 +44,15 @@ function distanceToSegment(
 }
 
 export function findEdgeAt(
-  edges: RoadEdge[],
-  nodes: RoadNode[],
+  nodes: Record<string, RoadNode>,
+  edges: Record<string, RoadEdge>,
   worldX: number,
   worldY: number,
   radius: number
 ): string | null {
-  for (const e of edges) {
-    const from = nodes.find((n) => n.id === e.from);
-    const to = nodes.find((n) => n.id === e.to);
+  for (const e of Object.values(edges)) {
+    const from = nodes[e.from];
+    const to = nodes[e.to];
 
     if (!from || !to) {
       continue;

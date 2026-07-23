@@ -18,8 +18,8 @@ export interface CanvasTapState {
   tool: EditorTool;
   zoom: number;
   selectedNodeId: string | null;
-  nodes: RoadNode[];
-  edges: RoadEdge[];
+  nodes: Record<string, RoadNode>;
+  edges: Record<string, RoadEdge>;
 }
 
 export function handleCanvasTap(
@@ -60,7 +60,7 @@ export function handleCanvasTap(
       return;
     }
 
-    const hitEdge = findEdgeAt(edges, nodes, worldX, worldY, edgeRadius);
+    const hitEdge = findEdgeAt(nodes, edges, worldX, worldY, edgeRadius);
 
     if (hitEdge) {
       selectEdge(hitEdge);

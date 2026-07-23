@@ -1,6 +1,6 @@
 import type { Graphics } from "pixi.js";
 
-export function drawDashedLine(
+export function renderDashedLine(
   graphics: Graphics,
   x1: number,
   y1: number,

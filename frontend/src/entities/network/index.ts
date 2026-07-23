@@ -13,7 +13,7 @@ export type {
   ScenarioType,
 } from "./model/types";
 
-export { getArms, buildArmsIndex, getIntersectionKind } from "./model/intersection";
+export { getIntersectionKind } from "./model/intersection";
 export type { IntersectionArm, ArmDirection, IntersectionKind } from "./model/intersection";
 
 export { DEFAULT_SCENARIO, DEFAULT_SINK_CAPACITY } from "./model/constants";

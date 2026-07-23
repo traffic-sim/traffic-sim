@@ -5,30 +5,31 @@ import { EditorTool } from "../../model/EditorTool";
 import { handleDeleteSelection } from "../../model/handleDeleteSelection";
 import { useEditorUiStore } from "../../store/editorUiStore";
 
-export function useToolbarShortcuts(setTool: (tool: EditorTool) => void) {
+export function useToolbarShortcuts() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) {
         return;
       }
 
+      const editor = useEditorUiStore.getState();
+
       switch (e.key) {
         case "v":
         case "V":
-          setTool(EditorTool.Select);
+          editor.setTool(EditorTool.Select);
           break;
         case "r":
         case "R":
-          setTool(EditorTool.Draw);
+          editor.setTool(EditorTool.Draw);
           break;
         case "h":
         case "H":
-          setTool(EditorTool.Pan);
+          editor.setTool(EditorTool.Pan);
           break;
         case "Delete":
         case "Backspace": {
           const network = useNetworkStore.getState();
-          const editor = useEditorUiStore.getState();
 
           handleDeleteSelection(
             {
@@ -51,5 +52,5 @@ export function useToolbarShortcuts(setTool: (tool: EditorTool) => void) {
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [setTool]);
+  }, []);
 }

@@ -3,9 +3,9 @@ import type { Graphics } from "pixi.js";
 import type { Camera } from "../model/camera";
 import { GRID_MAJOR_EVERY, GRID_SIZE, isFineGridVisible } from "../model/grid";
 
-import { COLORS } from "./constants";
+import { COLORS, PIXEL_ALIGNMENT } from "./constants";
 
-export function drawGrid(g: Graphics, width: number, height: number, camera: Camera) {
+export function renderGrid(g: Graphics, width: number, height: number, camera: Camera) {
   g.clear();
 
   const step = GRID_SIZE * camera.zoom;
@@ -15,14 +15,14 @@ export function drawGrid(g: Graphics, width: number, height: number, camera: Cam
   const originY = -camera.y * camera.zoom;
 
   if (isFineGridVisible(camera.zoom)) {
-    const firstX = originX % step;
-    const firstY = originY % step;
+    const firstX = ((originX % step) + step) % step;
+    const firstY = ((originY % step) + step) % step;
 
     strokeGridLines(g, width, height, firstX, firstY, step, COLORS.gridFine);
   }
 
-  const firstMajorX = originX % majorStep;
-  const firstMajorY = originY % majorStep;
+  const firstMajorX = ((originX % majorStep) + majorStep) % majorStep;
+  const firstMajorY = ((originY % majorStep) + majorStep) % majorStep;
 
   strokeGridLines(g, width, height, firstMajorX, firstMajorY, majorStep, COLORS.gridMajor);
 }
@@ -37,11 +37,11 @@ function strokeGridLines(
   color: number
 ) {
   for (let x = firstX; x <= width; x += step) {
-    g.moveTo(Math.round(x) + 0.5, 0).lineTo(Math.round(x) + 0.5, height);
+    g.moveTo(Math.round(x) + PIXEL_ALIGNMENT, 0).lineTo(Math.round(x) + PIXEL_ALIGNMENT, height);
   }
 
   for (let y = firstY; y <= height; y += step) {
-    g.moveTo(0, Math.round(y) + 0.5).lineTo(width, Math.round(y) + 0.5);
+    g.moveTo(0, Math.round(y) + PIXEL_ALIGNMENT).lineTo(width, Math.round(y) + PIXEL_ALIGNMENT);
   }
 
   g.stroke({ width: 1, color });

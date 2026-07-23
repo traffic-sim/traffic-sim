@@ -9,7 +9,7 @@ export function Toolbar() {
   const tool = useEditorUiStore((s) => s.tool);
   const setTool = useEditorUiStore((s) => s.setTool);
 
-  useToolbarShortcuts(setTool);
+  useToolbarShortcuts();
 
   return (
     <div className="toolbar">
