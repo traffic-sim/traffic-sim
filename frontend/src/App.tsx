@@ -3,7 +3,7 @@ import { relaunch } from "@tauri-apps/plugin-process";
 import { check } from "@tauri-apps/plugin-updater";
 import { useEffect, useState } from "react";
 
-import { MenuBar, type MenuBarTab } from "./components/MenuBar";
+import { MenuBar, type MenuBarTab } from "./components";
 import { TrafficNetworkEditorPage } from "./traffic-network-editor";
 
 import "./App.css";

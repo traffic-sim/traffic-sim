@@ -11,6 +11,7 @@ import { renderPreviewLine } from "../../pixi/renderDrawPreview";
 import { renderGrid } from "../../pixi/renderGrid";
 import { drawNetwork } from "../../pixi/renderNetwork";
 import { drawSnapIndicator } from "../../pixi/renderSnapIndicator";
+import { renderSpeedZones } from "../../pixi/renderSpeedZones";
 import { useEditorUiStore } from "../../store/editorUiStore";
 import { BoundaryBadges } from "../boundaryBadges/BoundaryBadges";
 import { DrawHint } from "../drawHint/DrawHint";
@@ -35,6 +36,7 @@ export function PixiCanvas() {
   const camera = useEditorUiStore((s) => s.camera);
   const tool = useEditorUiStore((s) => s.tool);
   const snapPreview = useEditorUiStore((s) => s.snapPreview);
+  const drawStartNodeId = useEditorUiStore((s) => s.drawStartNodeId);
   const selectedNodeId = useEditorUiStore((s) => s.selectedNodeId);
   const selectedEdgeId = useEditorUiStore((s) => s.selectedEdgeId);
 
@@ -44,8 +46,9 @@ export function PixiCanvas() {
   const boundaryNodes = useNetworkStore((s) => s.boundaryNodes);
   const graphIndex = useNetworkStore((s) => s.graphIndex);
 
-  const startNode =
-    tool === EditorTool.Draw && selectedNodeId ? (nodes[selectedNodeId] ?? null) : null;
+  const startNode = drawStartNodeId ? (nodes[drawStartNodeId] ?? null) : null;
+
+  const visualSelectedNodeId = tool === EditorTool.Draw ? drawStartNodeId : selectedNodeId;
 
   const hintPos = snapPreview ? worldToScreen(snapPreview.x, snapPreview.y, camera) : null;
 
@@ -86,11 +89,16 @@ export function PixiCanvas() {
         nodes,
         edges,
         intersections,
-        selectedNodeId,
+        selectedNodeId: visualSelectedNodeId,
         selectedEdgeId,
         camera,
       }),
-    [nodes, edges, intersections, selectedNodeId, selectedEdgeId, camera]
+    [nodes, edges, intersections, visualSelectedNodeId, selectedEdgeId, camera]
+  );
+
+  const handleDrawSpeedZones = useCallback(
+    (graphics: Graphics) => renderSpeedZones({ graphics, nodes, edges, camera }),
+    [nodes, edges, camera]
   );
 
   const handleDrawSnap = useCallback(
@@ -133,6 +141,7 @@ export function PixiCanvas() {
         >
           <pixiGraphics draw={handleDrawGrid} />
           <pixiGraphics draw={handleDrawNetwork} />
+          <pixiGraphics draw={handleDrawSpeedZones} />
           <RoadLabels nodes={nodes} edges={edges} camera={camera} />
           <IntersectionBadges nodes={nodes} graphIndex={graphIndex} camera={camera} />
           <BoundaryBadges nodes={nodes} boundaryNodes={boundaryNodes} camera={camera} />

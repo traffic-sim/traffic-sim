@@ -5,10 +5,22 @@ export interface RoadNode {
   position: Vec2;
 }
 
+export interface SpeedZone {
+  fromT: number; // 0-1, fraction along the road's length
+  toT: number; // 0-1
+  limit: number; // km/h - reduced speed limit within this zone
+}
+
 export interface RoadEdge {
   id: string;
+  name: string; // user-facing, editable label - defaults to "R001" style
   from: string;
   to: string;
+  vFree: number; // km/h - free-flow speed
+  rhoCritical: number; // veh/km - density at capacity
+  rhoJam: number; // veh/km - jam density
+  cells: number; // discretization count for the simulation
+  speedZones: SpeedZone[];
 }
 
 export interface Intersection {

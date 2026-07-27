@@ -1,8 +1,10 @@
 import { create } from "zustand";
 
 import { syncBoundaryNodes } from "./boundaryNode";
+import { DEFAULT_EDGE_PROPERTIES } from "./constants";
 import { buildGraphIndex, type GraphIndex } from "./graphIndex";
 import { syncIntersections } from "./intersection";
+import { generateNextRoadName } from "./roadNaming";
 import type { BoundaryNode, Intersection, NetworkGraph, RoadEdge, RoadNode } from "./types";
 
 interface NetworkState {
@@ -13,6 +15,7 @@ interface NetworkState {
   graphIndex: GraphIndex;
   addNode: (x: number, y: number) => string;
   addEdge: (from: string, to: string) => void;
+  updateEdge: (id: string, patch: Partial<Omit<RoadEdge, "id" | "from" | "to">>) => void;
   flipEdgeDirection: (id: string) => void;
   updateBoundaryNode: (
     nodeId: string,
@@ -64,7 +67,8 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
       const id = `e-${crypto.randomUUID()}`;
 
       set((state) => {
-        const edges = { ...state.edges, [id]: { id, from, to } };
+        const name = generateNextRoadName(state.edges);
+        const edges = { ...state.edges, [id]: { id, name, from, to, ...DEFAULT_EDGE_PROPERTIES } };
         const graphIndex = buildGraphIndex(edges);
 
         return {
@@ -72,6 +76,29 @@ export const useNetworkStore = create<NetworkState>((set, get) => {
           intersections: syncIntersections(graphIndex, state.intersections, [from, to]),
           boundaryNodes: syncBoundaryNodes(graphIndex, state.boundaryNodes, [from, to]),
           graphIndex,
+        };
+      });
+    },
+
+    updateEdge: (id, patch) => {
+      set((state) => {
+        const existing = state.edges[id];
+
+        if (!existing) {
+          return state;
+        }
+
+        const updated = { ...existing, ...patch };
+
+        if (patch.vFree !== undefined) {
+          updated.speedZones = updated.speedZones.map((zone) => ({
+            ...zone,
+            limit: Math.min(zone.limit, patch.vFree as number),
+          }));
+        }
+
+        return {
+          edges: { ...state.edges, [id]: updated },
         };
       });
     },

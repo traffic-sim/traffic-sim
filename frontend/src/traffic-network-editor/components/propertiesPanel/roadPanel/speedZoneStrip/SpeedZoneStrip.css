@@ -1,0 +1,16 @@
+.speed-zone-strip {
+  height: 1.125rem;
+  border-radius: var(--radius-sm);
+  border: 0.0625rem solid var(--border);
+  position: relative;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.speed-zone-strip__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+}

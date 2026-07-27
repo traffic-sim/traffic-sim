@@ -39,6 +39,7 @@ export default tseslint.config(
       "boundaries/elements": [
         { type: "entities", pattern: "src/entities/*/**", capture: ["entity"] },
         { type: "components", pattern: "src/components/**" },
+        { type: "theme", pattern: "src/theme/**" },
         { type: "feature", pattern: "src/*/**", capture: ["feature"] },
       ],
     },
@@ -102,13 +103,17 @@ export default tseslint.config(
             },
             {
               from: { element: { type: "components" } },
-              allow: { to: { element: { type: "components" } } },
+              allow: [
+                { to: { element: { type: "components" } } },
+                { to: { element: { type: "theme" } } },
+              ],
             },
             {
               from: { element: { type: "feature" } },
               allow: [
                 { to: { element: { type: "entities" } } },
                 { to: { element: { type: "components" } } },
+                { to: { element: { type: "theme" } } },
                 {
                   to: {
                     element: {
@@ -118,6 +123,10 @@ export default tseslint.config(
                   },
                 },
               ],
+            },
+            {
+              from: { element: { type: "themes" } },
+              allow: { to: { element: { type: "themes" } } },
             },
           ],
         },

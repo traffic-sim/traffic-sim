@@ -17,7 +17,7 @@ export function useCanvasTap() {
       world.y,
       {
         tool: editor.tool,
-        selectedNodeId: editor.selectedNodeId,
+        drawStartNodeId: editor.drawStartNodeId,
         nodes: network.nodes,
         edges: network.edges,
         zoom: editor.camera.zoom,
@@ -25,6 +25,7 @@ export function useCanvasTap() {
       {
         addNode: network.addNode,
         addEdge: network.addEdge,
+        setDrawStartNodeId: editor.setDrawStartNodeId,
         selectNode: editor.selectNode,
         selectEdge: editor.selectEdge,
         clearSelection: editor.clearSelection,
