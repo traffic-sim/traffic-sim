@@ -9,6 +9,7 @@ import { resolveSnap } from "./snapping";
 export interface CanvasTapActions {
   addNode: (x: number, y: number) => string;
   addEdge: (from: string, to: string) => void;
+  setDrawStartNodeId: (id: string | null) => void;
   selectNode: (id: string | null) => void;
   selectEdge: (id: string | null) => void;
   clearSelection: () => void;
@@ -17,7 +18,7 @@ export interface CanvasTapActions {
 export interface CanvasTapState {
   tool: EditorTool;
   zoom: number;
-  selectedNodeId: string | null;
+  drawStartNodeId: string | null;
   nodes: Record<string, RoadNode>;
   edges: Record<string, RoadEdge>;
 }
@@ -28,8 +29,8 @@ export function handleCanvasTap(
   state: CanvasTapState,
   actions: CanvasTapActions
 ) {
-  const { tool, zoom, selectedNodeId, nodes, edges } = state;
-  const { addNode, addEdge, selectNode, selectEdge, clearSelection } = actions;
+  const { tool, zoom, drawStartNodeId, nodes, edges } = state;
+  const { addNode, addEdge, setDrawStartNodeId, selectNode, selectEdge, clearSelection } = actions;
 
   const nodeRadius = HIT_RADIUS / zoom;
   const edgeRadius = EDGE_HIT_RADIUS / zoom;
@@ -40,13 +41,13 @@ export function handleCanvasTap(
     const snap = resolveSnap(worldX, worldY, nodes, ENDPOINT_SNAP_RADIUS / zoom, gridSize);
     const clickedId = snap.nodeId ?? addNode(snap.x, snap.y);
 
-    if (!selectedNodeId) {
-      selectNode(clickedId);
-    } else if (selectedNodeId === clickedId) {
-      selectNode(null);
+    if (!drawStartNodeId) {
+      setDrawStartNodeId(clickedId);
+    } else if (drawStartNodeId === clickedId) {
+      setDrawStartNodeId(null);
     } else {
-      addEdge(selectedNodeId, clickedId);
-      selectNode(null);
+      addEdge(drawStartNodeId, clickedId);
+      setDrawStartNodeId(null);
     }
 
     return;

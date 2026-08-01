@@ -26,6 +26,7 @@ export const COLORS = {
 
 // ── 2. Road geometry ────────────────────────────────────────────────
 export const ROAD_WIDTH = 14;
+export const SPEED_ZONE_OVERLAY_WIDTH = 2.5;
 export const ROAD_HIGHLIGHT_WIDTH = ROAD_WIDTH + 9;
 export const ROAD_HIGHLIGHT_ALPHA = 0.15;
 export const DASH_LENGTH = 7;

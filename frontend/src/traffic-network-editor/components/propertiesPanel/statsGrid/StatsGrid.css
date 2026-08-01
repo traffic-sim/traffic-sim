@@ -1,0 +1,15 @@
+.stats-grid__table {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.75rem;
+  font-size: 0.6875rem;
+}
+
+.stats-grid__label {
+  color: var(--text-3);
+}
+
+.stats-grid__value {
+  font-family: var(--mono);
+  color: var(--text-2);
+}

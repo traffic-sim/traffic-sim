@@ -1,0 +1,21 @@
+.road-panel__header-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+
+.road-panel__header-actions {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.road-panel__body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.road-panel__params {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}

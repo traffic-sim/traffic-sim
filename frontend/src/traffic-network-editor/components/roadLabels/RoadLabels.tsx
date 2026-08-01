@@ -33,7 +33,7 @@ export function RoadLabels({
         return (
           <pixiText
             key={edge.id}
-            text={edge.id}
+            text={edge.name}
             x={(fromScreen.x + toScreen.x) / 2}
             y={(fromScreen.y + toScreen.y) / 2 - ROAD_LABEL_OFFSET}
             anchor={0.5}

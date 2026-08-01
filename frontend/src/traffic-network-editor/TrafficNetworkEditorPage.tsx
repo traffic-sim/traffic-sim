@@ -1,4 +1,5 @@
 import { PixiCanvas } from "./components/canvas";
+import { PropertiesPanel } from "./components/propertiesPanel/PropertiesPanel";
 import { Toolbar } from "./components/toolbar";
 
 import "./TrafficNetworkEditorPage.css";
@@ -14,6 +15,7 @@ export function TrafficNetworkEditorPage() {
       <div className="traffic-network-editor-page__workspace">
         <Toolbar />
         <PixiCanvas />
+        <PropertiesPanel />
       </div>
     </div>
   );

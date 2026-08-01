@@ -93,6 +93,10 @@ html {
   --purple: #6a4c93;
   --red: #c0392b;
 
+  /* ── Chart accent  ──────────────────────────────────────── */
+  --chart-line: #4472c4;
+  --chart-line-secondary: #aaaaaa;
+
   /* ── Typography ────────────────────────────────────────────── */
   --font: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Menlo, Monaco, "Courier New", monospace;
@@ -148,4 +152,21 @@ body {
 .btn-default:hover {
   background: var(--bg-hover);
   border-color: var(--border-strong);
+}
+
+.btn-icon {
+  padding: 0.1875rem 0.3125rem;
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: var(--bg-hover);
+  color: var(--text);
 }

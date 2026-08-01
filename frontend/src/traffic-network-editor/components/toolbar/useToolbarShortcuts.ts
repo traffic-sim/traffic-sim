@@ -46,6 +46,7 @@ export function useToolbarShortcuts() {
         }
         case "Escape":
           useEditorUiStore.getState().clearSelection();
+          useEditorUiStore.getState().setDrawStartNodeId(null);
           break;
       }
     };
