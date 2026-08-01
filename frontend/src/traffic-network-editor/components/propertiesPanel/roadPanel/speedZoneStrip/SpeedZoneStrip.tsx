@@ -15,9 +15,11 @@ export function SpeedZoneStrip({ speedZones, vFree, onSelect }: SpeedZoneStripPr
         const hue = Math.round((z.limit / vFree) * 120);
 
         return (
-          <div
+          <button
             key={i}
+            type="button"
             className="speed-zone-strip__zone"
+            aria-label={`Select zone ${i + 1}: ${z.limit.toFixed(0)} km/h`}
             title={`Zone ${i + 1}: ${z.limit.toFixed(0)} km/h`}
             style={{
               left: `${z.fromT * 100}%`,

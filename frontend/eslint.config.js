@@ -125,8 +125,8 @@ export default tseslint.config(
               ],
             },
             {
-              from: { element: { type: "themes" } },
-              allow: { to: { element: { type: "themes" } } },
+              from: { element: { type: "theme" } },
+              allow: { to: { element: { type: "theme" } } },
             },
           ],
         },

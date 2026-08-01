@@ -18,7 +18,7 @@ import { StatsGrid } from "../statsGrid/StatsGrid";
 import { FundamentalDiagramChart } from "./fundamentalDiagramChart/FundamentalDiagramChart";
 import { SpeedZoneEditor } from "./speedZoneEditor/SpeedZoneEditor";
 
-import "../../../../theme/panelTheme.css";
+import "../PropertiesPanel.css";
 import "./RoadPanel.css";
 
 function distanceBetween(a: { x: number; y: number }, b: { x: number; y: number }): number {

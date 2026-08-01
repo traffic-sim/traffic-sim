@@ -39,6 +39,7 @@ interface MiniLineChartProps {
   data: ChartPoint[];
   height?: number;
   lineColor?: string;
+  curveType?: "monotone" | "linear";
   showAxes?: boolean;
   showGrid?: boolean;
   xLabel?: string;
@@ -62,6 +63,7 @@ export function MiniLineChart({
   data,
   height = 105,
   lineColor = "var(--chart-line)",
+  curveType = "monotone",
   showAxes = false,
   showGrid = false,
   xLabel,
@@ -143,7 +145,7 @@ export function MiniLineChart({
         ))}
 
         <Line
-          type="monotone"
+          type={curveType}
           dataKey="y"
           stroke={lineColor}
           strokeWidth={CHART_LINE_WIDTH}

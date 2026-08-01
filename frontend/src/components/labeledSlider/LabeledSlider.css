@@ -1,3 +1,27 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-size: 0.6875rem;
+  color: var(--text-3);
+}
+
+.field-value {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text);
+}
+
 .labeled-slider__input {
   width: 100%;
   -webkit-appearance: none;
@@ -9,13 +33,18 @@
   cursor: pointer;
 }
 
+.labeled-slider__input:focus-visible {
+  outline: 0.125rem solid var(--blue);
+  outline-offset: 0.125rem;
+}
+
 .labeled-slider__input::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 0.6875rem;
   height: 0.6875rem;
   border-radius: 50%;
   background: var(--blue);
-  border: 0.09375rem solid #fff;
+  border: 0.09375rem solid var(--bg-panel);
   box-shadow: 0 0 0 0.0625rem var(--blue);
   cursor: pointer;
   transition: transform 0.1s;
@@ -30,7 +59,7 @@
   height: 0.6875rem;
   border-radius: 50%;
   background: var(--blue);
-  border: 0.09375rem solid #fff;
+  border: 0.09375rem solid var(--bg-panel);
   box-shadow: 0 0 0 0.0625rem var(--blue);
   cursor: pointer;
   transition: transform 0.1s;

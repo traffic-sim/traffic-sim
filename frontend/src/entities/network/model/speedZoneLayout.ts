@@ -2,6 +2,7 @@ import type { SpeedZone } from "./types";
 
 const DEFAULT_ZONE_WIDTH = 0.3;
 const MIN_GAP = 0.02;
+const MIN_ZONE_SPAN = 0.02;
 
 function neighborBounds(zones: SpeedZone[], index: number): { lower: number; upper: number } {
   const current = zones[index];
@@ -33,15 +34,17 @@ export function getZoneDragBounds(
 export function clampZoneFromT(zones: SpeedZone[], index: number, proposed: number): number {
   const { lower } = neighborBounds(zones, index);
   const current = zones[index];
+  const upperLimit = Math.max(lower, current.toT - MIN_ZONE_SPAN);
 
-  return Math.min(Math.max(proposed, lower), current.toT);
+  return Math.min(Math.max(proposed, lower), upperLimit);
 }
 
 export function clampZoneToT(zones: SpeedZone[], index: number, proposed: number): number {
   const { upper } = neighborBounds(zones, index);
   const current = zones[index];
+  const lowerLimit = Math.min(upper, current.fromT + MIN_ZONE_SPAN);
 
-  return Math.max(Math.min(proposed, upper), current.fromT);
+  return Math.max(Math.min(proposed, upper), lowerLimit);
 }
 
 /**

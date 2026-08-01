@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import "../../../../theme/panelTheme.css";
+import "../PropertiesPanel.css";
 
 export function PanelSection({ label, children }: { label: string; children: ReactNode }) {
   return (

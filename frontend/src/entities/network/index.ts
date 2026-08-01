@@ -39,8 +39,6 @@ export {
 } from "./model/fundamentalDiagram";
 export type { TriangularFdParams } from "./model/fundamentalDiagram";
 
-export { densityColorHex, densityGradient } from "./model/viridis";
-
 export { generateNextRoadName } from "./model/roadNaming";
 
 export {

@@ -1,4 +1,3 @@
-import "../../theme/panelTheme.css";
 import "./LabeledSlider.css";
 
 interface LabeledSliderProps {
@@ -29,6 +28,7 @@ export function LabeledSlider({
       <input
         type="range"
         className="labeled-slider__input"
+        aria-label={label}
         min={min}
         max={max}
         step={step}

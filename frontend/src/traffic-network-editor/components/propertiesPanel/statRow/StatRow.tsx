@@ -1,4 +1,4 @@
-import "../../../../theme/panelTheme.css";
+import "../PropertiesPanel.css";
 
 export function StatRow({ label, value }: { label: string; value: string }) {
   return (

@@ -3,7 +3,6 @@ import { useEditorUiStore } from "../../store/editorUiStore";
 
 import { RoadPanel } from "./roadPanel";
 
-import "../../../theme/panelTheme.css";
 import "./PropertiesPanel.css";
 
 export function PropertiesPanel() {

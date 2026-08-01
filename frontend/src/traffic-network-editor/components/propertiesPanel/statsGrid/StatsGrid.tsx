@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import "../../../../theme/panelTheme.css";
+import "../PropertiesPanel.css";
 import "./StatsGrid.css";
 
 export interface StatsGridRow {

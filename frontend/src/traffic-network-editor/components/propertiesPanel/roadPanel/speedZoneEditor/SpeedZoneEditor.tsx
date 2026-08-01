@@ -25,7 +25,16 @@ export function SpeedZoneEditor({ edge }: { edge: RoadEdge }) {
 
   function patchZone(i: number, patch: Partial<{ fromT: number; toT: number; limit: number }>) {
     const next = [...edge.speedZones];
-    next[i] = { ...next[i], ...patch };
+    const merged = { ...next[i], ...patch };
+
+    if (patch.fromT !== undefined) {
+      merged.fromT = clampZoneFromT(edge.speedZones, i, merged.fromT);
+    }
+    if (patch.toT !== undefined) {
+      merged.toT = clampZoneToT(edge.speedZones, i, merged.toT);
+    }
+
+    next[i] = merged;
     updateEdge(edge.id, { speedZones: next });
   }
 
@@ -62,20 +71,22 @@ export function SpeedZoneEditor({ edge }: { edge: RoadEdge }) {
             key={i}
             className={`speed-zone-item ${editing === i ? "speed-zone-item--active" : ""}`}
           >
-            <div
-              className="speed-zone-item__header"
-              onClick={() => setEditing(editing === i ? null : i)}
-            >
-              <span className="speed-zone-item__title">
-                Zone {i + 1}: {z.limit.toFixed(0)} km/h · {formatToPercentage(z.fromT)}%–
-                {formatToPercentage(z.toT)}%
-              </span>
+            <div className="speed-zone-item__header">
               <button
+                type="button"
+                className="speed-zone-item__toggle"
+                onClick={() => setEditing(editing === i ? null : i)}
+              >
+                <span className="speed-zone-item__title">
+                  Zone {i + 1}: {z.limit.toFixed(0)} km/h · {formatToPercentage(z.fromT)}%–
+                  {formatToPercentage(z.toT)}%
+                </span>
+              </button>
+              <button
+                type="button"
                 className="speed-zone-item__delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeZone(i);
-                }}
+                aria-label={`Delete zone ${i + 1}`}
+                onClick={() => removeZone(i)}
               >
                 ×
               </button>
@@ -90,7 +101,7 @@ export function SpeedZoneEditor({ edge }: { edge: RoadEdge }) {
                   min={bounds.lower}
                   max={z.toT}
                   step={0.01}
-                  onChange={(v) => patchZone(i, { fromT: clampZoneFromT(edge.speedZones, i, v) })}
+                  onChange={(v) => patchZone(i, { fromT: v })}
                 />
                 <LabeledSlider
                   label="To"
@@ -99,7 +110,7 @@ export function SpeedZoneEditor({ edge }: { edge: RoadEdge }) {
                   min={z.fromT}
                   max={bounds.upper}
                   step={0.01}
-                  onChange={(v) => patchZone(i, { toT: clampZoneToT(edge.speedZones, i, v) })}
+                  onChange={(v) => patchZone(i, { toT: v })}
                 />
                 <LabeledSlider
                   label="Limit"

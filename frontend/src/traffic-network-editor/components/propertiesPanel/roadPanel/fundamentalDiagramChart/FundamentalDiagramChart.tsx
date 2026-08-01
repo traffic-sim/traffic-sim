@@ -16,13 +16,14 @@ export function FundamentalDiagramChart({ params }: { params: TriangularFdParams
       <MiniLineChart
         data={data}
         height={105}
+        curveType="linear"
         showAxes
         showGrid
         xLabel="ρ (veh/km)"
         yLabel="q"
         margin={{ top: 12, right: 4, bottom: 10, left: 24 }}
         yAxisWidth={26}
-        referenceLines={[{ x: params.rhoCritical, color: "#0047ab" }]}
+        referenceLines={[{ x: params.rhoCritical, color: "var(--blue)" }]}
         tooltip={{
           formatValue: (value) => value.toFixed(1),
           valueLabel: "flow q",

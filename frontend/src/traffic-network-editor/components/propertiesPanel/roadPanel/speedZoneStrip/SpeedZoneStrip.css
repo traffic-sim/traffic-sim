@@ -9,8 +9,19 @@
 }
 
 .speed-zone-strip__zone {
+  appearance: none;
   position: absolute;
   top: 0;
   bottom: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
   cursor: pointer;
+}
+
+.speed-zone-strip__zone:focus-visible {
+  outline: 0.125rem solid var(--blue);
+  outline-offset: -0.125rem;
+  z-index: 1;
 }

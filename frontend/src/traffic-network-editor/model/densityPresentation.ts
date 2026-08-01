@@ -37,11 +37,18 @@ export function densityGradient(density: number[], maxDensity: number): string {
     return "#e8e8e0";
   }
 
+  const safeMax = maxDensity > 0 ? maxDensity : 1;
+
   const n = Math.min(density.length, 80);
+
+  if (n === 1) {
+    return densityColorHex(density[0] / safeMax);
+  }
+
   const stops = Array.from({ length: n }, (_, i) => {
     const idx = Math.floor((i * density.length) / n);
 
-    return `${densityColorHex(density[idx] / maxDensity)} ${((i / (n - 1)) * 100).toFixed(1)}%`;
+    return `${densityColorHex(density[idx] / safeMax)} ${((i / (n - 1)) * 100).toFixed(1)}%`;
   });
 
   return `linear-gradient(to right, ${stops.join(",")})`;

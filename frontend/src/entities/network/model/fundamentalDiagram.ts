@@ -49,9 +49,11 @@ export function sampleFundamentalDiagram(
 ): { rho: number; q: number }[] {
   const points: { rho: number; q: number }[] = [];
 
-  for (let i = 0; i <= steps; i++) {
-    const rho = (params.rhoJam * i) / steps;
-    points.push({ rho, q: triangularFlow(rho, params) });
+  if (Number.isInteger(steps) && steps > 0) {
+    for (let i = 0; i <= steps; i++) {
+      const rho = (params.rhoJam * i) / steps;
+      points.push({ rho, q: triangularFlow(rho, params) });
+    }
   }
 
   return points;
