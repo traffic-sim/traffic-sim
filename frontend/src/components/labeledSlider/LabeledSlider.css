@@ -68,3 +68,11 @@
 .labeled-slider__input::-moz-range-thumb:hover {
   transform: scale(1.2);
 }
+
+.field--disabled {
+  opacity: 0.5;
+}
+
+.field--disabled .labeled-slider__input {
+  cursor: not-allowed;
+}

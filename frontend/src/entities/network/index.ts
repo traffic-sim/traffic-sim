@@ -29,7 +29,15 @@ export {
   CELL_COUNT_RANGE,
   SPEED_ZONE_LIMIT_MIN,
   SPEED_ZONE_LIMIT_STEP,
+  BASE_INFLOW_RANGE,
+  AMPLITUDE_RANGE,
+  PERIOD_RANGE,
+  SINK_CAPACITY_RANGE,
 } from "./model/constants";
+
+export { SCENARIO_LABELS, computeScenarioInflow } from "./model/scenario";
+
+export { niceYMax } from "./model/chartScale";
 
 export {
   triangularFlow,

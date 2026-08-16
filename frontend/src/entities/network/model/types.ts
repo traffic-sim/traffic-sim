@@ -44,7 +44,8 @@ export interface SourceRole {
 
 export interface SinkRole {
   kind: "sink";
-  capacity: number;
+  capacity: number; // veh
+  unlimited: boolean; // when true, capacity is ignored - every car is accepted
 }
 
 export type BoundaryRole = SourceRole | SinkRole;

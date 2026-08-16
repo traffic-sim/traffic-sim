@@ -19,7 +19,6 @@ import { FundamentalDiagramChart } from "./fundamentalDiagramChart/FundamentalDi
 import { SpeedZoneEditor } from "./speedZoneEditor/SpeedZoneEditor";
 
 import "../PropertiesPanel.css";
-import "./RoadPanel.css";
 
 function distanceBetween(a: { x: number; y: number }, b: { x: number; y: number }): number {
   return Math.hypot(b.x - a.x, b.y - a.y);
@@ -51,7 +50,7 @@ export function RoadPanel({ edge }: { edge: RoadEdge }) {
   return (
     <>
       <div className="panel-titlebar">
-        <div className="road-panel__header-name">
+        <div className="panel-header-name">
           <span className="panel-title">Road</span>
           <input
             type="text"
@@ -60,7 +59,7 @@ export function RoadPanel({ edge }: { edge: RoadEdge }) {
             onChange={(e) => updateEdge(edge.id, { name: e.target.value })}
           />
         </div>
-        <div className="road-panel__header-actions">
+        <div className="panel-header-actions">
           <button
             className="btn-icon"
             title="Flip road direction"
@@ -81,7 +80,7 @@ export function RoadPanel({ edge }: { edge: RoadEdge }) {
         </div>
       </div>
 
-      <div className="road-panel__body">
+      <div className="panel-body">
         <StatsGrid
           rows={[
             { label: "Length", value: `${length.toFixed(1)} m` },
@@ -90,7 +89,7 @@ export function RoadPanel({ edge }: { edge: RoadEdge }) {
         />
 
         <PanelSection label="Physical Parameters">
-          <div className="road-panel__params">
+          <div className="field-stack">
             <LabeledSlider
               label="Free-flow speed"
               value={edge.vFree}
