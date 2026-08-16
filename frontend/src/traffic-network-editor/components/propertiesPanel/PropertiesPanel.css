@@ -17,6 +17,30 @@
   letter-spacing: 0.0625rem;
 }
 
+.panel-header-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+
+.panel-header-actions {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Vertical stack of .field elements (LabeledSlider rows) with consistent
+   spacing — shared by any panel section that lists several sliders. */
+.field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
 .btn-icon--danger {
   color: var(--red);
 }
@@ -43,6 +67,21 @@
   flex: 1;
   height: 0.0625rem;
   background: var(--border);
+}
+
+/* Small pill badge shown inline in a section title, e.g. the current
+   scenario type next to "Traffic Scenario". */
+.pill-badge {
+  font-size: 0.5625rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  padding: 0.0625rem 0.3125rem;
+  border-radius: 0.5625rem;
+  font-family: var(--mono);
+  background: var(--blue-faint);
+  color: var(--navy);
+  border: 0.0625rem solid var(--blue-pale);
 }
 
 .field-row {

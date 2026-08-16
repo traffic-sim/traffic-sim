@@ -8,6 +8,7 @@ interface LabeledSliderProps {
   max: number;
   step: number;
   onChange: (value: number) => void;
+  disabled?: boolean;
 }
 
 export function LabeledSlider({
@@ -18,9 +19,10 @@ export function LabeledSlider({
   max,
   step,
   onChange,
+  disabled = false,
 }: LabeledSliderProps) {
   return (
-    <div className="field">
+    <div className={`field ${disabled ? "field--disabled" : ""}`}>
       <div className="field-row">
         <span className="field-label">{label}</span>
         <span className="field-value">{displayValue}</span>
@@ -33,6 +35,7 @@ export function LabeledSlider({
         max={max}
         step={step}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(Number(e.target.value))}
       />
     </div>

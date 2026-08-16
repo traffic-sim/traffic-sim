@@ -1,0 +1,25 @@
+.mini-line-chart__wrapper {
+  margin-top: 0.5rem;
+}
+
+.mini-line-chart__caption {
+  font-size: 0.625rem;
+  color: var(--text-3);
+  margin-bottom: 0.25rem;
+}
+
+.mini-line-chart__frame {
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.125rem;
+  overflow: hidden;
+  animation: mini-line-chart-fade-in 350ms ease-out;
+}
+
+@keyframes mini-line-chart-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

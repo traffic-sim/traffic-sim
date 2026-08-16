@@ -14,9 +14,9 @@ export const DEFAULT_EDGE_PROPERTIES: Omit<RoadEdge, "id" | "name" | "from" | "t
 
 export const DEFAULT_SCENARIO: TrafficScenario = {
   type: "constant",
-  baseInflow: 0.3,
+  baseInflow: 300, // veh/h
   amplitude: 0.5,
-  period: 300,
+  period: 200, // ticks
 };
 
 export const DEFAULT_SINK_CAPACITY = 50;
@@ -28,3 +28,8 @@ export const CELL_COUNT_RANGE = { min: 10, max: 500, step: 5 } as const;
 
 export const SPEED_ZONE_LIMIT_MIN = 5; // km/h
 export const SPEED_ZONE_LIMIT_STEP = 1; // km/h
+
+export const BASE_INFLOW_RANGE = { min: 0, max: 2000, step: 50 } as const; // veh/h
+export const AMPLITUDE_RANGE = { min: 0, max: 1, step: 0.01 } as const; // unitless
+export const PERIOD_RANGE = { min: 20, max: 2000, step: 10 } as const; // ticks
+export const SINK_CAPACITY_RANGE = { min: 0, max: 2000, step: 50 } as const; // veh

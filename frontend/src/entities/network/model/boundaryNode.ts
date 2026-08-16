@@ -19,7 +19,7 @@ function deriveRoleKind(
 function defaultRoleFor(kind: "source" | "sink"): BoundaryNode["role"] {
   return kind === "source"
     ? { kind: "source", scenario: { ...DEFAULT_SCENARIO } }
-    : { kind: "sink", capacity: DEFAULT_SINK_CAPACITY };
+    : { kind: "sink", capacity: DEFAULT_SINK_CAPACITY, unlimited: true };
 }
 
 export function syncBoundaryNodes(
