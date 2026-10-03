@@ -8,7 +8,6 @@ default:
 # =========================
 
 dev:
-  just build-backend
   npx concurrently --kill-others --names FRONTEND,TAURI "just dev-frontend" "just dev-tauri"
 
 [working-directory: "frontend"]
@@ -24,36 +23,14 @@ dev-tauri:
 # =========================
 
 build:
-  just build-backend
   just build-frontend
   just build-tauri
   just collect-artifacts
 
 build-signed:
-  just build-backend
   just build-frontend
   just build-tauri-signed
   just collect-artifacts
-
-build-backend:
-  just build-backend-{{os()}}
-
-build-backend-windows:
-  cmake -S backend -B backend/_cmake_build \
-    -G "Visual Studio 17 2022" \
-    -A x64 \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="build/backend"
-  cmake --build backend/_cmake_build --config Release
-  cmake --install backend/_cmake_build --config Release
-
-build-backend-linux:
-  cmake -S backend -B backend/_cmake_build \
-    -G Ninja \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="build/backend"
-  cmake --build backend/_cmake_build
-  cmake --install backend/_cmake_build
 
 build-frontend:
   npm --prefix frontend install
@@ -116,13 +93,14 @@ test:
   just test-rust
   just test-frontend
 
-[working-directory: "backend"]
+[working-directory: "ctm-core"]
 test-cpp:
+  cmake -S . -B _cmake_build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCTM_BUILD_TESTS=ON
   cmake --build _cmake_build
   ctest --test-dir _cmake_build --output-on-failure
 
-test-rust: build-backend copy-headers
-  cargo test --manifest-path bridge/Cargo.toml
+test-rust:
+  cargo test --manifest-path crates/Cargo.toml
 
 [working-directory: "frontend"]
 test-frontend:
@@ -138,13 +116,13 @@ lint:
   just lint-frontend
 
 # Requires compile_commands.json — run `just cmake-configure` first.
-[working-directory: "backend"]
+[working-directory: "ctm-core"]
 lint-cpp:
   find src include -name '*.cpp' -o -name '*.h' \
     | xargs clang-tidy --config-file=.clang-tidy -p _cmake_build
 
-lint-rust: copy-headers
-  cargo clippy --manifest-path bridge/Cargo.toml -- -D warnings
+lint-rust:
+  cargo clippy --manifest-path crates/Cargo.toml -- -D warnings
   cargo clippy --manifest-path app/src-tauri/Cargo.toml -- -D warnings
 
 [working-directory: "frontend"]
@@ -160,13 +138,13 @@ fmt:
   just fmt-rust
   just fmt-frontend
 
-[working-directory: "backend"]
+[working-directory: "ctm-core"]
 fmt-cpp:
   find src include -name '*.cpp' -o -name '*.h' \
     | xargs clang-format -i
 
 fmt-rust:
-  cargo fmt --manifest-path bridge/Cargo.toml
+  cargo fmt --manifest-path crates/Cargo.toml
   cargo fmt --manifest-path app/src-tauri/Cargo.toml
 
 [working-directory: "frontend"]
@@ -182,17 +160,17 @@ check:
   just check-rust
   just check-frontend
 
-[working-directory: "backend"]
+[working-directory: "ctm-core"]
 check-cpp:
   find src include -name '*.cpp' -o -name '*.h' \
     | xargs clang-format --dry-run --Werror
   find src include -name '*.cpp' \
     | xargs clang-tidy --config-file=.clang-tidy -p _cmake_build
 
-check-rust: copy-headers
-  cargo fmt --manifest-path bridge/Cargo.toml -- --check
+check-rust:
+  cargo fmt --manifest-path crates/Cargo.toml -- --check
   cargo fmt --manifest-path app/src-tauri/Cargo.toml -- --check
-  cargo clippy --manifest-path bridge/Cargo.toml -- -D warnings
+  cargo clippy --manifest-path crates/Cargo.toml -- -D warnings
   cargo clippy --manifest-path app/src-tauri/Cargo.toml -- -D warnings
 
 [working-directory: "frontend"]
@@ -204,19 +182,13 @@ check-frontend:
 # HELPERS
 # =========================
 
-# Copy backend headers into build/backend/include so bindgen can find them
-# without needing to compile the static lib.
-copy-headers:
-  cmake -E make_directory build/backend/include
-  cmake -E copy_directory backend/include build/backend/include
-
 # Generate compile_commands.json for clang-tidy / IDE integration.
-[working-directory: "backend"]
+[working-directory: "ctm-core"]
 cmake-configure:
   cmake -S . -B _cmake_build \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="backend" \
+    -DCMAKE_INSTALL_PREFIX="ctm-core" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 
@@ -226,10 +198,10 @@ cmake-configure:
 
 clean:
   cmake -E rm -rf build
-  cmake -E rm -rf backend/_cmake_build
+  cmake -E rm -rf ctm-core/_cmake_build
   cmake -E rm -rf frontend/dist
   cmake -E rm -rf frontend/node_modules
-  cargo clean --manifest-path bridge/Cargo.toml
+  cargo clean --manifest-path crates/Cargo.toml
   cargo clean --manifest-path app/src-tauri/Cargo.toml
 
 # =========================

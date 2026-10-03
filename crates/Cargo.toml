@@ -1,0 +1,20 @@
+[workspace]
+resolver = "3"
+members = [
+  "ctm-sys"
+]
+
+[workspace.package]
+version = "0.1.2"
+edition = "2024"
+license = "MIT"
+
+[profile.release]
+opt-level = 3
+
+# The simulation and the ADMM solver are numeric loops: unoptimized builds make the tests slow.
+[profile.dev]
+opt-level = 2
+
+[profile.test]
+opt-level = 2

@@ -48,7 +48,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: |
-            bridge
+            crates
             app/src-tauri
 
       - uses: taiki-e/install-action@just
