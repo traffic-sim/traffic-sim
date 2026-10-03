@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-add_library(ctm_core STATIC src/backend.cpp)
+add_library(ctm_core STATIC src/scenario.cpp)
 
 target_include_directories(ctm_core PUBLIC include PRIVATE src)
 target_compile_options(ctm_core PRIVATE -Wall -Wextra -Wpedantic)
