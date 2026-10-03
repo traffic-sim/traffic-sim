@@ -1,0 +1,10 @@
+[package]
+name = "ctm-sys"
+version.workspace = true
+edition.workspace = true
+build = "build.rs"
+
+[build-dependencies]
+cc = "1.6"
+bindgen = "0.73"
+cmake = "0.1"

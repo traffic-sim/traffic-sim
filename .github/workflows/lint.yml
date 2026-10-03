@@ -48,7 +48,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: |
-            bridge
+            crates
             app/src-tauri
 
       - uses: taiki-e/install-action@just
@@ -65,9 +65,6 @@ jobs:
             librsvg2-dev \
             libclang-dev \
             cmake
-
-      - name: Copy backend headers
-        run: just copy-headers
 
       - name: just check-rust
         run: just check-rust
