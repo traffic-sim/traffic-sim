@@ -140,7 +140,7 @@ fmt:
 
 [working-directory: "ctm-core"]
 fmt-cpp:
-  find src include -name '*.cpp' -o -name '*.h' \
+  find src include tests -name '*.cpp' -o -name '*.h' \
     | xargs clang-format -i
 
 fmt-rust:

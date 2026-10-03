@@ -10,7 +10,10 @@ Checks: >
   -readability-magic-numbers,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-  -cppcoreguidelines-pro-type-reinterpret-cast
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -readability-math-missing-parentheses,
+  -readability-uppercase-literal-suffix,
+  -bugprone-easily-swappable-parameters
 
 WarningsAsErrors: "*"
 
